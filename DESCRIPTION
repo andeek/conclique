@@ -1,0 +1,20 @@
+Package: conclique
+Title: A collection of helpful functions for dealing with spatial data and concliques
+Version: 0.0.0.9000
+Authors@R: c(person("Andee", "Kaplan", email = "ajkaplan@iastate.edu", role = c("aut", "cre")),
+             person("Daniel", "Nordman", email = "dnordman@iastate.edu", role = c("aut")))
+Description: This package is a collection of helpful functions for dealing with spatial data and concliques. 
+             Currently it contains functions for creating a minimal conclique cover as well as assigning the concliques
+             to a regular lattice for plotting and simulation purposes. This package is under development and will 
+             include additional functions for simulation of spatial data using a conclique-based Gibbs sampler.
+Depends:
+    R (>= 3.2.2)
+Imports:
+    igraph
+Suggests:
+    roxygen2,
+    knitr
+License: GPL-3
+LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 5.0.1
