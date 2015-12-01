@@ -4,10 +4,12 @@
 \alias{assign_concliques}
 \title{Assign conclique cover to regular lattice positions}
 \usage{
-assign_concliques(lattice, conclique_cover)
+assign_concliques(lattice = NULL, grid = NULL, conclique_cover)
 }
 \arguments{
 \item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by location}
+
+\item{grid}{A grid storing the locations of each point in the lattice. Either lattice or grid must be specified.}
 
 \item{conclique_cover}{A list of class "conclique_cover" encoding the locations in each conclique for the conclique cover}
 }

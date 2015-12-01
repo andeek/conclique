@@ -3,7 +3,11 @@
 #' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by location
 #' @param max_concliques The current list of the largest concliques, defaults to empty initial value
 #' @export
-#' @import igraph
+#' @importFrom igraph V
+#' @importFrom igraph difference
+#' @importFrom igraph as_ids
+#' @importFrom igraph largest_ivs
+#' @importFrom igraph induced_subgraph
 #' @examples
 #' \dontrun{
 #'     lattice <- igraph::make_lattice(c(6,6))
@@ -17,7 +21,7 @@ min_conclique_cover <- function(lattice, max_concliques = list()) {
   missing <- difference(V(lattice), included_nodes)
   
   if(length(missing) != 0) {
-    max_concliques[[n + 1]] <- missing[largest_ivs(induced_subgraph(lattice, missing))[[1]]]
+    max_concliques[[n + 1]] <- as.numeric(as_ids(missing[largest_ivs(induced_subgraph(lattice, missing))[[1]]]))
     min_conclique_cover(lattice, max_concliques)
   } else {
     class(max_concliques) <- "conclique_cover"

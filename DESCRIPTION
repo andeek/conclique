@@ -12,7 +12,9 @@ BugReports: https://github.com/andeek/conclique/issues
 Depends:
     R (>= 3.2.2)
 Imports:
-    igraph
+    dplyr,
+    igraph,
+    lazyeval
 Suggests:
     roxygen2,
     knitr
