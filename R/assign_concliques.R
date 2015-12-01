@@ -10,8 +10,6 @@
 #'     concliques <- min_conclique_cover(lattice)
 #'     assign_concliques(lattice, concliques)
 #' }
-
-
 assign_concliques <- function(lattice, conclique_cover) {
   stopifnot("igraph" %in% class(lattice) & "conclique_cover" %in% class(conclique_cover))
   dimvector <- get.graph.attribute(lattice, "dimvector")

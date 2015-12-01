@@ -9,7 +9,6 @@
 #'     lattice <- igraph::make_lattice(c(6,6))
 #'     concliques <- min_conclique_cover(lattice)
 #' }
-
 min_conclique_cover <- function(lattice, max_concliques = list()) {
   stopifnot("igraph" %in% class(lattice))
   

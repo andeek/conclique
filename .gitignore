@@ -1,6 +1,7 @@
 # History files
 .Rhistory
 .Rapp.history
+.Rbuildignore
 
 # Example code in package build process
 *-Ex.R
@@ -12,3 +13,4 @@
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+.Rproj.user

@@ -7,6 +7,8 @@ Description: This package is a collection of helpful functions for dealing with 
              Currently it contains functions for creating a minimal conclique cover as well as assigning the concliques
              to a regular lattice for plotting and simulation purposes. This package is under development and will 
              include additional functions for simulation of spatial data using a conclique-based Gibbs sampler.
+URL: https://github.com/andeek/conclique
+BugReports: https://github.com/andeek/conclique/issues
 Depends:
     R (>= 3.2.2)
 Imports:
