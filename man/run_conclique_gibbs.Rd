@@ -4,7 +4,7 @@
 \alias{run_conclique_gibbs}
 \title{Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.}
 \usage{
-run_conclique_gibbs(lattice, conclique_cover, inits, inverse_conditional_dsn,
+run_conclique_gibbs(lattice, conclique_cover, inits, inv_conditional_dsn,
   params, n.iter = 100)
 }
 \arguments{
@@ -16,15 +16,15 @@ the conclique cover}
 
 \item{inits}{Initial values for the lattice, formatted as a grid.}
 
-\item{inverse_conditional_dsn}{A function that has three inputs: 
+\item{inv_conditional_dsn}{A function that has three inputs: 
 \itemize{
   \item{value,}
   \item{data, and}
   \item{params.}
 }
-Value is a vector of values between 0 and 1. The data is a data frame containing two columns, 
-vertex and sum_neighbor, which encode the values for the neighboring locations of each location 
-in the conclique and params is a list of parameter values. This function returns the inverse cdf 
+Value is a vector of values between 0 and 1. The data is a data frame containing three columns, 
+vertex, sum_neighbor, and num_neighbor which encode the values for the neighboring locations of each location 
+in the conclique and the number of neighbors each location has. params is a list of parameter values. This function returns the inverse cdf 
 at a value between 0 and 1 from the conditional distribution}
 
 \item{params}{A list of parameters to be passed to the conditional_density function}

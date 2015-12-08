@@ -11,9 +11,9 @@
 #'          \item{data, and}
 #'          \item{params.}
 #'        }
-#'        Value is a vector of values between 0 and 1. The data is a data frame containing two columns, 
-#'        vertex and sum_neighbor, which encode the values for the neighboring locations of each location 
-#'        in the conclique and params is a list of parameter values. This function returns the inverse cdf 
+#'        Value is a vector of values between 0 and 1. The data is a data frame containing three columns, 
+#'        vertex, sum_neighbor, and num_neighbor which encode the values for the neighboring locations of each location 
+#'        in the conclique and the number of neighbors each location has. params is a list of parameter values. This function returns the inverse cdf 
 #'        at a value between 0 and 1 from the conditional distribution
 #' @param params A list of parameters to be passed to the conditional_density function 
 #' @param n.iter Number of times to run the Gibbs sampler
@@ -35,6 +35,7 @@ run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional
 
   Q <- length(conclique_cover)
   for(i in 1:n.iter) {
+    #initialize neighboring data
     data.frame(vertex = as_ids(V(lattice))) %>%
       group_by_("vertex") %>%
       do_(~data.frame(sum_neighbor = sum(data[i, , ][as_ids(adjacent_vertices(lattice, .$vertex)[[1]])]),
@@ -44,6 +45,13 @@ run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional
       neighbor_data %>% filter_(.dots = paste0("vertex %in% c(", paste(conclique_cover[[j]], collapse = ", "), ")")) -> neighbor_data_conc
       U <- runif(length(conclique_cover[[j]]))
       data[i + 1, , ][conclique_cover[[j]]] <- inv_func(value = U, data = neighbor_data_conc, params = params)
+      
+      #update neighboring data
+      data.frame(vertex = as_ids(V(lattice))) %>%
+        filter_(.dots = paste0("vertex %in% c(", paste(conclique_cover[[j]], collapse = ", "), ")")) %>%
+        group_by_("vertex") %>%
+        do_(~data.frame(sum_neighbor = sum(data[i + 1, , ][as_ids(adjacent_vertices(lattice, .$vertex)[[1]])]),
+                        num_neighbor = length(as_ids(adjacent_vertices(lattice, .$vertex)[[1]])))) -> neighbor_data[neighbor_data$vertex %in% conclique_cover[[j]], ]
     }
   }
   
