@@ -32,14 +32,18 @@ run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional
   inv_func <- match.fun(inv_conditional_dsn)
   data <- array(dim = c(n.iter + 1, dimvector))
   data[1, , ] <- inits
-
+  
+  data.frame(vertex = as_ids(V(lattice))) %>%
+    group_by_("vertex") %>%
+    do_(neighbors = ~as_ids(adjacent_vertices(lattice, .$vertex)[[1]])) -> neighbors
+  
   Q <- length(conclique_cover)
   for(i in 1:n.iter) {
     #initialize neighboring data
-    data.frame(vertex = as_ids(V(lattice))) %>%
+    neighbors %>%
       group_by_("vertex") %>%
-      do_(~data.frame(sum_neighbor = sum(data[i, , ][as_ids(adjacent_vertices(lattice, .$vertex)[[1]])]),
-                      num_neighbor = length(as_ids(adjacent_vertices(lattice, .$vertex)[[1]])))) -> neighbor_data
+      do_(~data.frame(sum_neighbor = sum(data[i, , ][.$neighbors[[1]]]), 
+                    num_neighbor = length(.$neighbors[[1]]))) -> neighbor_data
     
     for(j in 1:Q) {
       neighbor_data %>% filter_(.dots = paste0("vertex %in% c(", paste(conclique_cover[[j]], collapse = ", "), ")")) -> neighbor_data_conc
@@ -47,11 +51,11 @@ run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional
       data[i + 1, , ][conclique_cover[[j]]] <- inv_func(value = U, data = neighbor_data_conc, params = params)
       
       #update neighboring data
-      data.frame(vertex = as_ids(V(lattice))) %>%
+      neighbors %>%
         filter_(.dots = paste0("vertex %in% c(", paste(conclique_cover[[j]], collapse = ", "), ")")) %>%
         group_by_("vertex") %>%
-        do_(~data.frame(sum_neighbor = sum(data[i + 1, , ][as_ids(adjacent_vertices(lattice, .$vertex)[[1]])]),
-                        num_neighbor = length(as_ids(adjacent_vertices(lattice, .$vertex)[[1]])))) -> neighbor_data[neighbor_data$vertex %in% conclique_cover[[j]], ]
+        do_(~data.frame(sum_neighbor = sum(data[i + 1, , ][.$neighbors[[1]]]),
+                        num_neighbor = length(.$neighbors[[1]]))) -> neighbor_data[neighbor_data$vertex %in% conclique_cover[[j]], ]
     }
   }
   

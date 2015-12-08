@@ -21,16 +21,16 @@
 #' @importFrom dplyr group_by_
 #' @importFrom dplyr do_
 spatial_residuals <- function(data_grid, lattice, conditional_dsn, params) {
-stopifnot("igraph" %in% class(lattice))
-dimvector <- get.graph.attribute(lattice, "dimvector")
-cdf_func <- match.fun(conditional_dsn)
-vertices <- as_ids(V(lattice))
-
-data.frame(vertex = vertices) %>%
-  group_by_("vertex") %>%
-  do_(~data.frame(data_value = data_grid[.$vertex],
-                  sum_neighbor = sum(data_grid[as_ids(adjacent_vertices(lattice, .$vertex)[[1]])]),
-                  num_neighbor = length(as_ids(adjacent_vertices(lattice, .$vertex)[[1]])))) -> neighbor_data
-
-cdf_func(data = neighbor_data, params = params)
+  stopifnot("igraph" %in% class(lattice))
+  dimvector <- get.graph.attribute(lattice, "dimvector")
+  cdf_func <- match.fun(conditional_dsn)
+  vertices <- as_ids(V(lattice))
+  
+  data.frame(vertex = vertices) %>%
+    group_by_("vertex") %>%
+    do_(~data.frame(data_value = data_grid[.$vertex],
+                    sum_neighbor = sum(data_grid[as_ids(adjacent_vertices(lattice, .$vertex)[[1]])]),
+                    num_neighbor = length(as_ids(adjacent_vertices(lattice, .$vertex)[[1]])))) -> neighbor_data
+  
+  cdf_func(data = neighbor_data, params = params)
 }
