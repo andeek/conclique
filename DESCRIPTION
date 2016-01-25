@@ -14,7 +14,8 @@ Depends:
 Imports:
     dplyr,
     igraph,
-    lazyeval
+    lazyeval,
+    tidyr
 Suggests:
     roxygen2,
     knitr

@@ -1,7 +1,7 @@
 #' Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
 #' 
 #' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
-#'        location
+#'        location. 
 #' @param conclique_cover A list of class "conclique_cover" encoding the locations in each conclique for 
 #'        the conclique cover
 #' @param inits Initial values for the lattice, formatted as a grid.
@@ -11,10 +11,10 @@
 #'          \item{data, and}
 #'          \item{params.}
 #'        }
-#'        Value is a vector of values between 0 and 1. The data is a data frame containing three columns, 
-#'        vertex, sum_neighbor, and num_neighbor which encode the values for the neighboring locations of each location 
-#'        in the conclique and the number of neighbors each location has. params is a list of parameter values. This function returns the inverse cdf 
-#'        at a value between 0 and 1 from the conditional distribution
+#'        Value is a vector of values between 0 and 1. The data is a list containing two element, 
+#'        sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
+#'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns the inverse cdf 
+#'        at a value between 0 and 1 from the conditional distribution.
 #' @param params A list of parameters to be passed to the conditional_density function 
 #' @param n.iter Number of times to run the Gibbs sampler
 #' @export
@@ -25,39 +25,39 @@
 #' @importFrom dplyr %>%
 #' @importFrom dplyr group_by_
 #' @importFrom dplyr do_
-#' @importFrom dplyr filter_
+#' @importFrom dplyr mutate_
+#' @importFrom dplyr arrange_
+#' @importFrom tidyr spread_
 run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional_dsn, params, n.iter = 100) {
+  
   stopifnot("igraph" %in% class(lattice) & "conclique_cover" %in% class(conclique_cover))
   dimvector <- get.graph.attribute(lattice, "dimvector")
   inv_func <- match.fun(inv_conditional_dsn)
-  data <- array(dim = c(n.iter + 1, dimvector))
-  data[1, , ] <- inits
+  data <- array(dim = c(n.iter + 1, prod(dimvector)))
+  data[1, ] <- inits
   
   data.frame(vertex = as_ids(V(lattice))) %>%
     group_by_("vertex") %>%
-    do_(neighbors = ~as_ids(adjacent_vertices(lattice, .$vertex)[[1]])) -> neighbors
+    do_(~data.frame(neighbors = as_ids(adjacent_vertices(lattice, .$vertex)[[1]]))) %>%
+    group_by_(~vertex) %>%
+    mutate_(key = ~paste0("neighbor_", 1:n())) %>%
+    spread_("key", "neighbors") %>%
+    arrange_(~vertex) %>%
+    data.matrix() -> neighbors
   
   Q <- length(conclique_cover)
   for(i in 1:n.iter) {
     #initialize neighboring data
-    neighbors %>%
-      group_by_("vertex") %>%
-      do_(~data.frame(sum_neighbor = sum(data[i, , ][.$neighbors[[1]]]), 
-                    num_neighbor = length(.$neighbors[[1]]))) -> neighbor_data
+    data_sums <- rowSums(matrix(data[i, neighbors[,-1]], ncol = ncol(neighbors) - 1), na.rm = TRUE)
+    num_neighbors <- rowSums(!is.na(matrix(data[i, neighbors[,-1]], ncol = ncol(neighbors) - 1)))
     
     for(j in 1:Q) {
-      neighbor_data %>% filter_(.dots = paste0("vertex %in% c(", paste(conclique_cover[[j]], collapse = ", "), ")")) -> neighbor_data_conc
-      U <- runif(length(conclique_cover[[j]]))
-      data[i + 1, , ][conclique_cover[[j]]] <- inv_func(value = U, data = neighbor_data_conc, params = params)
-      
-      #update neighboring data
-      neighbors %>%
-        filter_(.dots = paste0("vertex %in% c(", paste(conclique_cover[[j]], collapse = ", "), ")")) %>%
-        group_by_("vertex") %>%
-        do_(~data.frame(sum_neighbor = sum(data[i + 1, , ][.$neighbors[[1]]]),
-                        num_neighbor = length(.$neighbors[[1]]))) -> neighbor_data[neighbor_data$vertex %in% conclique_cover[[j]], ]
+      data_sums_conc <- data_sums[conclique_cover[[j]]]
+      num_neighbors_conc <- num_neighbors[conclique_cover[[j]]]
+      U <- runif(length(data_sums_conc))
+      data[i + 1, conclique_cover[[j]]] <- inv_func(value = U, data = list(sums = data_sums_conc, nums = num_neighbors_conc), params = params)
     }
   }
   
-  return(data[-1, , ])
+  return(data[-1, ])
 }

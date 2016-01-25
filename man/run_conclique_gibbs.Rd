@@ -9,7 +9,7 @@ run_conclique_gibbs(lattice, conclique_cover, inits, inv_conditional_dsn,
 }
 \arguments{
 \item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
-location}
+location.}
 
 \item{conclique_cover}{A list of class "conclique_cover" encoding the locations in each conclique for 
 the conclique cover}
@@ -22,10 +22,10 @@ the conclique cover}
   \item{data, and}
   \item{params.}
 }
-Value is a vector of values between 0 and 1. The data is a data frame containing three columns, 
-vertex, sum_neighbor, and num_neighbor which encode the values for the neighboring locations of each location 
-in the conclique and the number of neighbors each location has. params is a list of parameter values. This function returns the inverse cdf 
-at a value between 0 and 1 from the conditional distribution}
+Value is a vector of values between 0 and 1. The data is a list containing two element, 
+sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
+in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns the inverse cdf 
+at a value between 0 and 1 from the conditional distribution.}
 
 \item{params}{A list of parameters to be passed to the conditional_density function}
 
