@@ -34,14 +34,7 @@ run_sequential_gibbs <- function(lattice, inits, conditional_sampler, params, n.
   data <- array(dim = c(n.iter + 1, prod(dimvector)))
   data[1, ] <- inits
   
-  data.frame(vertex = as_ids(V(lattice))) %>%
-    group_by_("vertex") %>%
-    do_(~data.frame(neighbors = as_ids(adjacent_vertices(lattice, .$vertex)[[1]]))) %>%
-    group_by_(~vertex) %>%
-    mutate_(key = ~paste0("neighbor_", 1:n())) %>%
-    spread_("key", "neighbors") %>%
-    arrange_(~vertex) %>%
-    data.matrix() -> neighbors
+  neighbors <- get_neighbors(lattice)
   
   for(i in 1:n.iter) {
     #initialize neighboring data

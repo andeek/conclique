@@ -19,15 +19,6 @@
 #' @param n.iter Number of times to run the Gibbs sampler
 #' @export
 #' @importFrom igraph get.graph.attribute
-#' @importFrom igraph V
-#' @importFrom igraph as_ids
-#' @importFrom igraph adjacent_vertices
-#' @importFrom dplyr %>%
-#' @importFrom dplyr group_by_
-#' @importFrom dplyr do_
-#' @importFrom dplyr mutate_
-#' @importFrom dplyr arrange_
-#' @importFrom tidyr spread_
 run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional_dsn, params, n.iter = 100) {
   
   stopifnot("igraph" %in% class(lattice) & "conclique_cover" %in% class(conclique_cover))
@@ -36,14 +27,7 @@ run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional
   data <- array(dim = c(n.iter + 1, prod(dimvector)))
   data[1, ] <- inits
   
-  data.frame(vertex = as_ids(V(lattice))) %>%
-    group_by_("vertex") %>%
-    do_(~data.frame(neighbors = as_ids(adjacent_vertices(lattice, .$vertex)[[1]]))) %>%
-    group_by_(~vertex) %>%
-    mutate_(key = ~paste0("neighbor_", 1:n())) %>%
-    spread_("key", "neighbors") %>%
-    arrange_(~vertex) %>%
-    data.matrix() -> neighbors
+  neighbors <- get_neighbors(lattice)
   
   Q <- length(conclique_cover)
   for(i in 1:n.iter) {
