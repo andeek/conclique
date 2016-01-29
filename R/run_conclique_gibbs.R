@@ -4,8 +4,10 @@
 #'        location. 
 #' @param conclique_cover A list of class "conclique_cover" encoding the locations in each conclique for 
 #'        the conclique cover
+#' @param neighbors A matrix N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
+#'                  If NULL, will be calculated within the function.
 #' @param inits Initial values for the lattice, formatted as a grid.
-#' @param inv_conditional_dsn A function that has three inputs: 
+#' @param conditional_sampler A function that has three inputs: 
 #'        \itemize{
 #'          \item{value,}
 #'          \item{data, and}
@@ -13,21 +15,21 @@
 #'        }
 #'        Value is a vector of values between 0 and 1. The data is a list containing two element, 
 #'        sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
-#'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns the inverse cdf 
-#'        at a value between 0 and 1 from the conditional distribution.
+#'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
+#'        a value sampled from the specified conditional distribution given the data and parameters passed.
 #' @param params A list of parameters to be passed to the conditional_density function 
 #' @param n.iter Number of times to run the Gibbs sampler
 #' @export
 #' @importFrom igraph get.graph.attribute
-run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional_dsn, params, n.iter = 100) {
+run_conclique_gibbs <- function(lattice, conclique_cover, neighbors = NULL, inits, conditional_sampler, params, n.iter = 100) {
   
   stopifnot("igraph" %in% class(lattice) & "conclique_cover" %in% class(conclique_cover))
   dimvector <- get.graph.attribute(lattice, "dimvector")
-  inv_func <- match.fun(inv_conditional_dsn)
+  sampler_func <- match.fun(conditional_sampler)
   data <- array(dim = c(n.iter + 1, prod(dimvector)))
   data[1, ] <- inits
   
-  neighbors <- get_neighbors(lattice)
+  if(is.null(neighbors)) neighbors <- get_neighbors(lattice)
   
   Q <- length(conclique_cover)
   for(i in 1:n.iter) {
@@ -38,8 +40,7 @@ run_conclique_gibbs <- function(lattice, conclique_cover, inits, inv_conditional
     for(j in 1:Q) {
       data_sums_conc <- data_sums[conclique_cover[[j]]]
       num_neighbors_conc <- num_neighbors[conclique_cover[[j]]]
-      U <- runif(length(data_sums_conc))
-      data[i + 1, conclique_cover[[j]]] <- inv_func(value = U, data = list(sums = data_sums_conc, nums = num_neighbors_conc), params = params)
+      data[i + 1, conclique_cover[[j]]] <- sampler_func(data = list(sums = data_sums_conc, nums = num_neighbors_conc), params = params)
     }
   }
   

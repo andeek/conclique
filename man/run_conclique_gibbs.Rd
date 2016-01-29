@@ -4,8 +4,8 @@
 \alias{run_conclique_gibbs}
 \title{Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.}
 \usage{
-run_conclique_gibbs(lattice, conclique_cover, inits, inv_conditional_dsn,
-  params, n.iter = 100)
+run_conclique_gibbs(lattice, conclique_cover, neighbors = NULL, inits,
+  conditional_sampler, params, n.iter = 100)
 }
 \arguments{
 \item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
@@ -14,9 +14,12 @@ location.}
 \item{conclique_cover}{A list of class "conclique_cover" encoding the locations in each conclique for 
 the conclique cover}
 
+\item{neighbors}{A matrix N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
+If NULL, will be calculated within the function.}
+
 \item{inits}{Initial values for the lattice, formatted as a grid.}
 
-\item{inv_conditional_dsn}{A function that has three inputs: 
+\item{conditional_sampler}{A function that has three inputs: 
 \itemize{
   \item{value,}
   \item{data, and}
@@ -24,8 +27,8 @@ the conclique cover}
 }
 Value is a vector of values between 0 and 1. The data is a list containing two element, 
 sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
-in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns the inverse cdf 
-at a value between 0 and 1 from the conditional distribution.}
+in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
+a value sampled from the specified conditional distribution given the data and parameters passed.}
 
 \item{params}{A list of parameters to be passed to the conditional_density function}
 
