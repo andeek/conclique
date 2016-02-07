@@ -38,11 +38,13 @@ run_sequential_gibbs <- function(lattice, neighbors = NULL, inits, conditional_s
   result <- array(dim = c(n.iter, prod(dimvector)))
   data <- inits
   
+  q <- ncol(neighbors) - 1
+  
   for(i in 1:n.iter) {
     for(j in 1:length(data)) {
       idx <- neighbors[j, -1]
-      data_sums <- rowSums(matrix(data[idx], ncol = ncol(neighbors) - 1), na.rm = TRUE)
-      num_neighbors <- rowSums(!is.na(matrix(data[idx], ncol = ncol(neighbors) - 1)))
+      data_sums <- rowSums(matrix(data[idx], ncol = q), na.rm = TRUE)
+      num_neighbors <- rowSums(!is.na(matrix(data[idx], ncol = q)))
       
       data[j] <- sampler_func(data = list(sums = data_sums, nums = num_neighbors), params = params)
     }
