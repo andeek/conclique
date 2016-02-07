@@ -32,13 +32,17 @@ run_conclique_gibbs <- function(lattice, conclique_cover, neighbors = NULL, init
   data <- inits
 
   Q <- length(conclique_cover)
+  n <- ncol(neighbors) - 1
+  
   for(i in 1:n.iter) {
     for(j in 1:Q) {
-      idx <- neighbors[conclique_cover[[j]], -1]
-      data_sums <- rowSums(matrix(data[idx], ncol = ncol(neighbors) - 1), na.rm = TRUE)
-      num_neighbors <- rowSums(!is.na(matrix(data[idx], ncol = ncol(neighbors) - 1)))
+      conc <- conclique_cover[[j]]
+      idx <- neighbors[conc, -1]
 
-      data[conclique_cover[[j]]] <- sampler_func(data = list(sums = data_sums, nums = num_neighbors), params = params)
+      data_sums <- rowSums(matrix(data[idx], ncol = n), na.rm = TRUE)
+      num_neighbors <- rowSums(!is.na(matrix(data[idx], ncol = n)))
+
+      data[conc] <- sampler_func(data = list(sums = data_sums, nums = num_neighbors), params = params)
     }
     result[i, ] <- data
   }
