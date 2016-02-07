@@ -4,12 +4,15 @@
 \alias{run_sequential_gibbs}
 \title{Run a sequential Gibbs sampler to sample spatial data given a lattice and neighborhood structure.}
 \usage{
-run_sequential_gibbs(lattice, inits, conditional_sampler, params,
-  n.iter = 100)
+run_sequential_gibbs(lattice, neighbors = NULL, inits, conditional_sampler,
+  params, n.iter = 100)
 }
 \arguments{
 \item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
 location.}
+
+\item{neighbors}{A matrix N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
+If NULL, will be calculated within the function.}
 
 \item{inits}{Initial values for the lattice, formatted as a grid.}
 

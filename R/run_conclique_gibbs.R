@@ -26,23 +26,21 @@ run_conclique_gibbs <- function(lattice, conclique_cover, neighbors = NULL, init
   stopifnot("igraph" %in% class(lattice) & "conclique_cover" %in% class(conclique_cover))
   dimvector <- get.graph.attribute(lattice, "dimvector")
   sampler_func <- match.fun(conditional_sampler)
-  data <- array(dim = c(n.iter + 1, prod(dimvector)))
-  data[1, ] <- inits
   
   if(is.null(neighbors)) neighbors <- get_neighbors(lattice)
-  
+  result <- array(dim = c(n.iter, prod(dimvector)))
+  data <- inits
+
   Q <- length(conclique_cover)
   for(i in 1:n.iter) {
-    #initialize neighboring data
-    data_sums <- rowSums(matrix(data[i, neighbors[,-1]], ncol = ncol(neighbors) - 1), na.rm = TRUE)
-    num_neighbors <- rowSums(!is.na(matrix(data[i, neighbors[,-1]], ncol = ncol(neighbors) - 1)))
-    
     for(j in 1:Q) {
-      data_sums_conc <- data_sums[conclique_cover[[j]]]
-      num_neighbors_conc <- num_neighbors[conclique_cover[[j]]]
-      data[i + 1, conclique_cover[[j]]] <- sampler_func(data = list(sums = data_sums_conc, nums = num_neighbors_conc), params = params)
+      idx <- neighbors[conclique_cover[[j]], -1]
+      data_sums <- rowSums(matrix(data[idx], ncol = ncol(neighbors) - 1), na.rm = TRUE)
+      num_neighbors <- rowSums(!is.na(matrix(data[idx], ncol = ncol(neighbors) - 1)))
+
+      data[conclique_cover[[j]]] <- sampler_func(data = list(sums = data_sums, nums = num_neighbors), params = params)
     }
+    result[i, ] <- data
   }
-  
-  return(data[-1, ])
+  return(result)
 }

@@ -3,6 +3,8 @@
 #' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
 #'        location. 
 #' @param inits Initial values for the lattice, formatted as a grid.
+#' @param neighbors A matrix N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
+#'                  If NULL, will be calculated within the function.
 #' @param conditional_sampler A function that has three inputs: 
 #'        \itemize{
 #'          \item{value,}
@@ -26,25 +28,26 @@
 #' @importFrom dplyr mutate_
 #' @importFrom dplyr arrange_
 #' @importFrom tidyr spread_
-run_sequential_gibbs <- function(lattice, inits, conditional_sampler, params, n.iter = 100) {
+run_sequential_gibbs <- function(lattice, neighbors = NULL, inits, conditional_sampler, params, n.iter = 100) {
   
   stopifnot("igraph" %in% class(lattice))
   dimvector <- get.graph.attribute(lattice, "dimvector")
   sampler_func <- match.fun(conditional_sampler)
-  data <- array(dim = c(n.iter + 1, prod(dimvector)))
-  data[1, ] <- inits
   
-  neighbors <- get_neighbors(lattice)
+  if(is.null(neighbors)) neighbors <- get_neighbors(lattice)
+  result <- array(dim = c(n.iter, prod(dimvector)))
+  data <- inits
   
   for(i in 1:n.iter) {
-    #initialize neighboring data
-    data_sums <- rowSums(matrix(data[i, neighbors[,-1]], ncol = ncol(neighbors) - 1), na.rm = TRUE)
-    num_neighbors <- rowSums(!is.na(matrix(data[i, neighbors[,-1]], ncol = ncol(neighbors) - 1)))
-    
-    for(j in 1:ncol(data)) {
-      data[i + 1, j] <- sampler_func(data = list(sums = data_sums[j], nums = num_neighbors[j]), params = params)
+    for(j in 1:length(data)) {
+      idx <- neighbors[j, -1]
+      data_sums <- rowSums(matrix(data[idx], ncol = ncol(neighbors) - 1), na.rm = TRUE)
+      num_neighbors <- rowSums(!is.na(matrix(data[idx], ncol = ncol(neighbors) - 1)))
+      
+      data[j] <- sampler_func(data = list(sums = data_sums, nums = num_neighbors), params = params)
     }
+    result[i, ] <- data
   }
   
-  return(data[-1, ])
+  return(result)
 }
