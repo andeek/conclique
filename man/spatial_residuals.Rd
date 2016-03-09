@@ -2,7 +2,7 @@
 % Please edit documentation in R/spatial_residuals.R
 \name{spatial_residuals}
 \alias{spatial_residuals}
-\title{Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.}
+\title{Get spatial residuals from data given a neighborhood structure and MRF model.}
 \usage{
 spatial_residuals(data, neighbors, conditional_dsn, params)
 }
@@ -23,6 +23,6 @@ at a value between 0 and 1 from the conditional distribution}
 \item{params}{A list of parameters to be passed to the conditional_density function}
 }
 \description{
-Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
+Get spatial residuals from data given a neighborhood structure and MRF model.
 }
 

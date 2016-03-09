@@ -1,4 +1,4 @@
-#' Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
+#' Get spatial residuals from data given a neighborhood structure and MRF model.
 #' 
 #' @param data A vector containing data values for each location in the lattice.
 #' @param neighbors A matrix N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
@@ -12,15 +12,6 @@
 #'        at a value between 0 and 1 from the conditional distribution
 #' @param params A list of parameters to be passed to the conditional_density function 
 #' @export
-#' @importFrom igraph V
-#' @importFrom igraph as_ids
-#' @importFrom igraph adjacent_vertices
-#' @importFrom dplyr %>%
-#' @importFrom dplyr group_by_
-#' @importFrom dplyr do_
-#' @importFrom dplyr mutate_
-#' @importFrom dplyr arrange_
-#' @importFrom tidyr spread_
 spatial_residuals <- function(data, neighbors, conditional_dsn, params) {
   cdf_func <- match.fun(conditional_dsn)
   

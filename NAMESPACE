@@ -2,6 +2,7 @@
 
 export(assign_concliques)
 export(get_neighbors)
+export(gof_statistics)
 export(lattice_4nn_torus)
 export(min_conclique_cover)
 export(run_conclique_gibbs)
