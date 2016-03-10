@@ -5,7 +5,7 @@
 \title{Get goodness of fit statistics for the spatial residuals of a MRF model.}
 \usage{
 gof_statistics(residuals, conclique_cover, statistic = c("ks", "cvm"),
-  aggregate = c("mean", "max"), n.grid = 10000)
+  aggregate = c("mean", "max"))
 }
 \arguments{
 \item{residuals}{A vector containing residuals for each location in the lattice, 
@@ -19,8 +19,6 @@ Cramer von Mises ("cvm"). Kolmogorov-Smirnov is the default choice.}
 
 \item{aggregate}{How to aggregate GOF statistics across concliques, mean ("mean") or 
 max ("max"). Mean is the default. Can also be a name of a user defined aggregation function.}
-
-\item{n.grid}{Length of grid to use for calculating the ecdf values. Default is 10e3.}
 }
 \description{
 Get goodness of fit statistics for the spatial residuals of a MRF model.

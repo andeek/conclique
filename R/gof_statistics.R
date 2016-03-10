@@ -8,19 +8,19 @@
 #'        Cramer von Mises ("cvm"). Kolmogorov-Smirnov is the default choice. 
 #' @param aggregate How to aggregate GOF statistics across concliques, mean ("mean") or 
 #'        max ("max"). Mean is the default. Can also be a name of a user defined aggregation function.
-#' @param n.grid Length of grid to use for calculating the ecdf values. Default is 10e3.
 #' @export
 gof_statistics <- function(residuals, conclique_cover, statistic = c("ks", "cvm"), aggregate = c("mean", "max")) {
   stopifnot("conclique_cover" %in% class(conclique_cover))
   stat <- statistic[1]
   aggregate <- aggregate[1]
   resids <- lapply(conclique_cover, FUN = function(conc) { sort(residuals[conc]) })
- 
+  N <- length(residuals)
+  
   if(stat == "ks") {
     s <- lapply(resids, FUN = function(conc) { 
       n <- length(conc)
       tmp <- seq(1/n, 1, 1/n)
-      max(max(abs(conc - tmp)), max(abs(conc - tmp + 1/n))) 
+      sqrt(N)*max(max(abs(conc - tmp)), max(abs(conc - tmp + 1/n))) 
       })
   } else if (stat == "cvm") {
     s <- lapply(resids, FUN = function(conc) {
@@ -30,7 +30,7 @@ gof_statistics <- function(residuals, conclique_cover, statistic = c("ks", "cvm"
       for(i in 2:(n + 2)) {
         res[i-1] <- ((i - 2)/n)^2*(conc[i] - conc[i - 1]) - (i - 2)/n*(conc[i]^2 - conc[i - 1]^2) + 1/3
       }
-      sum(res)
+      sqrt(N)*sum(res)
     })
   } else {
     #attempt to evaluate user-input statistic
