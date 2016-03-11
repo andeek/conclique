@@ -1,0 +1,159 @@
+---
+title: "GOF Statistics"
+author: "Andee Kaplan and Daniel Nordman"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+  fig_caption: yes
+  toc: true
+bibliography: refs.bib
+vignette: >
+  %\VignetteIndexEntry{GOF Statistics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Markov random field models are common for spatial data. Rather than specifying a joint distribution directly, a  model is specified through a set of full conditional distributions for each spatial location. The `R` package `conclique` provides a way to simulate from a MRF using a Gibbs sampler based on *concliques* as well as implements a formal goodness-of-fit (GOF) test for model assessment. For reference, see [@kaiser2012goodness].
+
+This vignette shows an example of how to test for Goodness-of-Fit (GOF) using a conclique-based approach in the package `conclique`. This example is preceeded by an example of simulating spatial data using conclique-based Gibbs sampling in the vignette [Conclique-based Gibbs sampling](conclique-gibbs.html)
+
+```{r concliques-contd, echo=FALSE, message = FALSE, warning = FALSE}
+library(conclique)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+set.seed(300)
+N <- 6
+grid <- matrix(1:(N*N), nrow = N)
+
+lattice <- lattice_4nn_torus(c(N, N))
+concliques <- min_conclique_cover(lattice)
+
+neighbors <- get_neighbors(lattice)
+params <- list(rho = 1, kappa = 0, eta = .24)
+inits <- matrix(0, nrow = N, ncol = N)
+num_sample <- 10000
+
+conclique_simulation <- run_conclique_gibbs(lattice, 
+                                            concliques, 
+                                            neighbors, 
+                                            inits, 
+                                            gaussian_single_param_sampler, 
+                                            params, 
+                                            n.iter = num_sample)
+
+sequential_simulation <- run_sequential_gibbs(lattice, 
+                                            neighbors, 
+                                            inits, 
+                                            gaussian_single_param_sampler, 
+                                            params, 
+                                            n.iter = num_sample)
+
+```
+
+#Generalized Spatial Residuals
+Let $F(y|\boldsymbol y(N_i), \boldsymbol \theta)$ be the conditional cdf of the data, $Y(\boldsymbol s_i)$ under the model. We can define *generlized spatial residuals* through substitution of random variables, $Y(\boldsymbol s_i)$ and neighbors $\{Y(\boldsymbol s_j): \boldsymbol s_j \in N_i \}$, into  (continuous) conditional cdf:
+
+$$
+R(\boldsymbol s_i) = F(Y(\boldsymbol s_i)|\{Y(\boldsymbol s_j): \boldsymbol s_j \in N_i \}, \boldsymbol \theta).
+$$
+
+These residuals, $R(\boldsymbol s_i)$, can be defined for non-continuous $F$ too.
+
+It then holds that *within* a conclique, the generalized spatial residuals are iid Uniform$(0, 1)$-distributed.
+
+The spatial residuals are obtainable using the `conclique` package. We can continue with our example from the vignette [Conclique-based Gibbs sampling](conclique-gibbs.html) using data generated from a Gaussian MRF with $\rho = 1, \kappa = 0, \eta = .24$. Use the last dataset we generated as our "data".
+
+```{r resids}
+conclique_dat <- conclique_simulation[num_sample, ]
+conclique_resids <- spatial_residuals(conclique_dat, neighbors, gaussian_single_param_cdf, params)
+```
+
+```{r resids-plot, echo=FALSE, fig.cap="Looking at the emprirical cdf of generalized spatial residuals from simulated Gaussian MRF with $\\rho = 1, \\kappa = 0, \\eta = .24$ versus the correct model. The black line represents the cdf of a Uniform$(0,1)$."}
+ecdf_vals <- lapply(concliques, function(conc) {fn <- ecdf(conclique_dat[conc]); fn(conclique_dat[conc])})
+names(ecdf_vals) <- 1:length(concliques)
+ecdf_vals <- do.call(cbind, ecdf_vals) %>% data.frame()
+
+ecdf_vals %>%
+  data.frame() %>%
+  gather(conclique, ecdf) %>%
+  separate(conclique, into = c("junk", "conclique"), 1) -> ecdf_vals
+
+ecdf_vals[, "u"] <- do.call(c, lapply(concliques, function(conc) conclique_resids[conc]))
+
+ecdf_vals %>%
+  ggplot() +
+  geom_point(aes(u, ecdf, colour = conclique)) +
+  geom_abline(aes(slope = 1, intercept = 0)) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+
+```
+
+We could also look at the residuals from a poorly fit model, say with $\eta = 0.05$.
+
+```{r resids_err}
+conclique_resids_err <- spatial_residuals(conclique_dat, neighbors, gaussian_single_param_cdf, list(rho = 1, kappa = 0, eta = 0.05))
+```
+
+```{r resids_err-plot, echo=FALSE, fig.cap="Looking at the emprirical cdf of generalized spatial residuals from simulated Gaussian MRF with $\\rho = 1, \\kappa = 0, \\eta = .24$ versus an incorrect model with $\\eta = .05$. The black line represents the cdf of a Uniform$(0,1)$."}
+ecdf_vals_err <- lapply(concliques, function(conc) {fn <- ecdf(conclique_dat[conc]); fn(conclique_dat[conc])})
+names(ecdf_vals_err) <- 1:length(concliques)
+ecdf_vals_err <- do.call(cbind, ecdf_vals_err) %>% data.frame()
+
+ecdf_vals_err %>%
+  data.frame() %>%
+  gather(conclique, ecdf) %>%
+  separate(conclique, into = c("junk", "conclique"), 1) -> ecdf_vals_err
+
+ecdf_vals_err[, "u"] <- do.call(c, lapply(concliques, function(conc) conclique_resids_err[conc]))
+
+ecdf_vals_err %>%
+  ggplot() +
+  geom_point(aes(u, ecdf, colour = conclique)) +
+  geom_abline(aes(slope = 1, intercept = 0)) +
+  theme_bw() +
+  theme(aspect.ratio = 1)
+
+```
+We can see that for both concliques, all of the residuals are below the Uniform$(0,1)$ cdf, showing this may be a poor fit (which in fact it is by design).
+
+#Test Statistics
+In order to combine generalized spatial residuals across concliques to form a single test statistic, we look at the empirical cdf of the residuals and its difference to the Uniform$(0,1)$ cdf using some discrepancy measure (like the Kolmogorov-Smirnov statistic) and combine using an aggregation function (like maximum).
+
+Both the Kolmogorov-Smirnov statistic and the Cramèr-von-Mises criterion are implemented in `conclique`, and any user specified aggregation can be supplied; `mean` and `max` are recommended.
+
+```{r gof}
+conclique_gof <- gof_statistics(conclique_resids, concliques, "ks", "max")
+conclique_gof_err <- gof_statistics(conclique_resids_err, concliques, "ks", "max")
+```
+
+```{r gof_table, echo=FALSE}
+data.frame(True = conclique_gof, Incorrect = conclique_gof_err) %>%
+  knitr::kable()
+
+```
+
+We can see that the incorrectly specified model has a higher value of the statistic, which points to potentially rejecting this model, however without a reference distribution, it's impossible to say. Luckily, we have the ability to sample from the model and bootstrap this distribution using our simulation functions in `conclique`.
+
+#Extending `conclique`
+Once again, one of the key advantages to using conclique-based approaches for simulation and GOF tests is the ability to extend to models beyond the Gaussian MRF with 4-nearest neighbor structure. In order to extend `conclique` to use an arbitrary conditional distibution for the generalized spatial residuals, the user must specify a cdf function which takes as parameters 
+
+ - `data` A list containing two elements, `sums` and `nums`, which contain the sum of the data in each neighborhood as well as the number of locations in the neighborhood for each point in the conclique. 
+ - `params` A named list of parameter values, that parameterize the distribution.
+ 
+For example, the cdf function for the single dependency parameter Gaussian model is reproduced below.
+
+```
+gaussian_single_param_cdf <- function(data, params) {
+  rho <- params$rho
+  kappa <- params$kappa
+  eta <- params$eta
+  
+  mean_structure <- kappa + eta*(data$sums - data$nums*kappa)
+  pnorm(data$data, mean = mean_structure, sd = rho)
+}
+```
+
+#References

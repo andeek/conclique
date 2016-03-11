@@ -1,0 +1,130 @@
+---
+title: "Conclique-based Gibbs sampling"
+author: "Andee Kaplan and Daniel Nordman"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+  fig_caption: yes
+  toc: true
+bibliography: refs.bib
+vignette: >
+  %\VignetteIndexEntry{Conclique-based Gibbs sampling}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Markov random field models are common for spatial data. Rather than specifying a joint distribution directly, a  model is specified through a set of full conditional distributions for each spatial location. The `R` package `conclique` provides a way to simulate from a MRF using a Gibbs sampler based on *concliques* as well as implements a formal goodness-of-fit (GOF) test for model assessment. For reference, see [@kaiser2012goodness].
+
+This vignette shows an example of how to simulate from a MRF using a conclique-based Gibbs sampler using `conclique`. This example is extended to looking at GOF tests in [GOF statistics](gof-statistics.html)
+
+#Concliques
+*Concliques* are defined as sets of locations such that no location in the set is a neighbor
+of any other location in the set. For example, the sets of all singular locations is a trivial set of concliques for any neighborhood structure. We can create the set of maximal concliques for a given lattice (the minimal conclique cover) using the `conclique` package and assign them to a grid for easy plotting.
+
+```{r concliques}
+library(conclique)
+
+N <- 6
+grid <- matrix(1:(N*N), nrow = N)
+
+lattice <- lattice_4nn_torus(c(N, N))
+concliques <- min_conclique_cover(lattice)
+grid <- assign_concliques(grid = grid, conclique_cover = concliques)
+
+```
+
+```{r conc-plots, echo=FALSE, warning = FALSE, message = FALSE, fig.cap="Minimal conclique cover for a given lattice of size $6\\times6$ using a 4-nearest neighbors structure wrapped on a torus. This results in 2 concliques."}
+library(ggplot2)
+library(dplyr)
+library(scales)
+theme_blank <- function() {
+  theme <- theme_bw()
+  theme$line <- element_blank()
+  theme$rect <- element_blank()
+  theme$strip.text <- element_blank()
+  theme$axis.text <- element_blank()
+  theme$plot.title <- element_blank()
+  theme$axis.title <- element_blank()
+  
+  return(theme)
+}
+ggplot2::theme_set(theme_blank())
+
+
+set.seed(300)
+expand.grid(x = 1:N, y = 1:N) %>%
+  rowwise() %>%
+  mutate(conclique = grid[x, y]) %>%
+  ggplot() +
+  geom_text(aes(x = x, y = y, label = conclique))
+```
+
+#Simulation
+We can use the conditional independence of the concliques to create a batch updating Gibbs sampler to simulate spatial values from this model. The `conclique` package comes equipped with all the functions necessary to simulate from a Gaussian MRF with a single dependence parameter, however the user can supply his own functions for simulation, see the section on [extending](#extending-conclique) `conclique`. 
+
+For this example, we will simulate from the Gaussian MRF with $\rho = 1, \kappa = 0, \eta = .24$ using both a conclique-based Gibbs sampler and a sequential Gibbs sampler to compare run time.
+
+```{r}
+neighbors <- get_neighbors(lattice)
+params <- list(rho = 1, kappa = 0, eta = .24)
+inits <- matrix(0, nrow = N, ncol = N)
+num_sample <- 10000
+
+## conclique-gibbs
+time <- Sys.time()
+conclique_simulation <- run_conclique_gibbs(lattice, 
+                                            concliques, 
+                                            neighbors, 
+                                            inits, 
+                                            gaussian_single_param_sampler, 
+                                            params, 
+                                            n.iter = num_sample)
+conc_time <- Sys.time() - time 
+
+## sequential gibbs
+time <- Sys.time()
+sequential_simulation <- run_sequential_gibbs(lattice, 
+                                            neighbors, 
+                                            inits, 
+                                            gaussian_single_param_sampler, 
+                                            params, 
+                                            n.iter = num_sample)
+seq_time <- Sys.time() - time
+```
+
+In this example, the conclique-based gibbs sampler took `r conc_time` seconds and the sequential-based gibbs sampler took `r seq_time` seconds to simulate `r comma(num_sample)` spatial data sets of size $6 \times 6$.
+
+#Extending `conclique`
+Obviously, simulating from a Gaussian MRF with 4-nearest neighbor structure can be accomplished with exact simulation. However, the conclique-based Gibbs method can be used for an arbitrary dependence structure and a user-defined conditional distribution.
+
+##Dependence structure
+The `conclique` package comes with a function to create a lattice of specified dimension with 4-nearest neighbor structure wrapped on a torus (`lattice_4nn_torus`). However, the user can create his own dependence structure by creating an `igraph` [@igraph] object with each location as a node and the dependence as the edges. The dimension of the lattice must be kept as an attribute for the object, this is accomplished using
+
+```
+igraph::set.graph.attribute(lattice, "dimvector", dimvec)
+```
+
+where `dimvec` is a vector storing the dimensions of the lattice, for example `c(N, N)`.
+
+##Conditional distribution
+Additionally, the user can specify a difference conditional distribution to sample the spatial data from. In order to accomplish this, the user must provide a function which takes as parameters 
+
+ - `data` A list containing two elements, `sums` and `nums`, which contain the sum of the data in each neighborhood as well as the number of locations in the neighborhood for each point in the conclique. 
+ - `params` A named list of parameter values, that parameterize the distribution.
+ 
+This function must return a sampled dataset the same size as the original data.
+
+For example, the sampler function for the single dependency parameter Gaussian model is reproduced below.
+
+```
+gaussian_single_param_sampler <- function(data, params) {
+  rho <- params$rho
+  kappa <- params$kappa
+  eta <- params$eta
+  
+  mean_structure <- kappa + eta*(data$sums - data$nums*kappa)
+  rnorm(length(mean_structure))*rho + mean_structure
+}
+```
+
+#References

@@ -18,7 +18,10 @@ Imports:
     tidyr
 Suggests:
     roxygen2,
-    knitr
+    ggplot2,
+    knitr,
+    rmarkdown,
+    scales
 License: GPL-3
 LazyData: true
 VignetteBuilder: knitr
