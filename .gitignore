@@ -8,10 +8,12 @@
 # RStudio files
 .Rproj.user/
 *.Rproj
+
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
 .Rproj.user
+
 # mac stuff
 .DS_Store
 inst/doc
