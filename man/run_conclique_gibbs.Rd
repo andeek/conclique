@@ -2,10 +2,11 @@
 % Please edit documentation in R/run_conclique_gibbs.R
 \name{run_conclique_gibbs}
 \alias{run_conclique_gibbs}
-\title{Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.}
+\title{Run a conclique-based Gibbs sampler with a single dependency parameter to sample spatial data given a lattice and neighborhood structure.}
 \usage{
 run_conclique_gibbs(lattice, conclique_cover, neighbors = NULL, inits,
-  conditional_sampler, params, n.iter = 100)
+  conditional_sampler, params, directional = FALSE, grid = NULL,
+  n.iter = 100)
 }
 \arguments{
 \item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
@@ -32,9 +33,13 @@ a value sampled from the specified conditional distribution given the data and p
 
 \item{params}{A list of parameters to be passed to the conditional_density function}
 
+\item{directional}{Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.}
+
+\item{grid}{A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE.}
+
 \item{n.iter}{Number of times to run the Gibbs sampler}
 }
 \description{
-Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
+Run a conclique-based Gibbs sampler with a single dependency parameter to sample spatial data given a lattice and neighborhood structure.
 }
 

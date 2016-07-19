@@ -1,4 +1,4 @@
-#' Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
+#' Run a conclique-based Gibbs sampler with a single dependency parameter to sample spatial data given a lattice and neighborhood structure.
 #' 
 #' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
 #'        location. 
@@ -17,32 +17,52 @@
 #'        sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
 #'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
 #'        a value sampled from the specified conditional distribution given the data and parameters passed.
+#' @param directional Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.
+#' @param grid A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE.       
 #' @param params A list of parameters to be passed to the conditional_density function 
 #' @param n.iter Number of times to run the Gibbs sampler
 #' @export
 #' @importFrom igraph get.graph.attribute
-run_conclique_gibbs <- function(lattice, conclique_cover, neighbors = NULL, inits, conditional_sampler, params, n.iter = 100) {
+run_conclique_gibbs <- function(lattice, conclique_cover, neighbors = NULL, inits, conditional_sampler, params, directional = FALSE, grid = NULL, n.iter = 100) {
   
   stopifnot("igraph" %in% class(lattice) & "conclique_cover" %in% class(conclique_cover))
   dimvector <- get.graph.attribute(lattice, "dimvector")
   sampler_func <- match.fun(conditional_sampler)
   
-  if(is.null(neighbors)) neighbors <- get_neighbors(lattice)
+  if(is.null(neighbors)) neighbors <- get_neighbors(lattice, directional, grid)
   result <- array(dim = c(n.iter, prod(dimvector)))
   data <- inits
 
   Q <- length(conclique_cover)
-  q <- ncol(neighbors) - 1
+  
   
   for(i in 1:n.iter) {
     for(j in 1:Q) {
       conc <- conclique_cover[[j]]
-      idx <- neighbors[conc, -1]
-      dat <- matrix(data[idx], ncol = q)
-
-      data_sums <- rowSums(dat, na.rm = TRUE)
-      num_neighbors <- rowSums(!is.na(dat))
-
+      
+      if(directional) {
+        res <- lapply(neighbors, function(x) {
+          q <- ncol(x) - 1
+          idx <- x[conc, -1]
+          dat <- cbind(data[idx[, 1]], data[idx[, 2]]) #TODO: for some reason there is an index out of bounds the other way
+          
+          list(rowSums(dat, na.rm = TRUE), rowSums(!is.na(dat)))
+        })
+        res <- do.call(rbind, res)
+        
+        data_sums <- res[, 1]
+        num_neighbors <- res[, 2]
+        
+      } else {
+        q <- ncol(neighbors) - 1
+        
+        idx <- neighbors[conc, -1]
+        dat <- matrix(data[idx], ncol = q)
+        
+        data_sums <- rowSums(dat, na.rm = TRUE)
+        num_neighbors <- rowSums(!is.na(dat))
+      }
+      
       data[conc] <- sampler_func(data = list(sums = data_sums, nums = num_neighbors), params = params)
     }
     result[i, ] <- data

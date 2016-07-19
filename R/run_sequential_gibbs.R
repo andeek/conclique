@@ -28,25 +28,38 @@
 #' @importFrom dplyr mutate_
 #' @importFrom dplyr arrange_
 #' @importFrom tidyr spread_
-run_sequential_gibbs <- function(lattice, neighbors = NULL, inits, conditional_sampler, params, n.iter = 100) {
+run_sequential_gibbs <- function(lattice, neighbors = NULL, inits, conditional_sampler, params, directional = FALSE, grid = NULL, n.iter = 100) {
   
   stopifnot("igraph" %in% class(lattice))
   dimvector <- get.graph.attribute(lattice, "dimvector")
   sampler_func <- match.fun(conditional_sampler)
   
-  if(is.null(neighbors)) neighbors <- get_neighbors(lattice)
+  if(is.null(neighbors)) neighbors <- get_neighbors(lattice, directional, grid)
   result <- array(dim = c(n.iter, prod(dimvector)))
   data <- inits
   
-  q <- ncol(neighbors) - 1
-  
   for(i in 1:n.iter) {
     for(j in 1:length(data)) {
-      idx <- neighbors[j, -1]
-      dat <- data[idx]
-      
-      data_sums <- sum(dat, na.rm = TRUE)
-      num_neighbors <- sum(!is.na(dat))
+      if(directional) {
+        res <- lapply(neighbors, function(x) {
+          q <- ncol(x) - 1
+          idx <- x[j, -1]
+          dat <- data[idx]
+          
+          list(sum(dat, na.rm = TRUE), sum(!is.na(dat)))
+        })
+        res <- do.call(rbind, res)
+        
+        data_sums <- res[, 1]
+        num_neighbors <- res[, 2]
+
+      } else {
+        idx <- neighbors[j, -1]
+        dat <- data[idx]
+        
+        data_sums <- sum(dat, na.rm = TRUE)
+        num_neighbors <- sum(!is.na(dat))
+      }
       
       data[j] <- sampler_func(data = list(sums = data_sums, nums = num_neighbors), params = params)
     }

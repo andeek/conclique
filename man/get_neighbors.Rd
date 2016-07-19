@@ -4,7 +4,7 @@
 \alias{get_neighbors}
 \title{Get the neighbors of each location in the lattice.}
 \usage{
-get_neighbors(lattice)
+get_neighbors(lattice, directional = FALSE, grid = NULL)
 }
 \arguments{
 \item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
