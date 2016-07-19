@@ -5,7 +5,7 @@
 \title{Run a sequential Gibbs sampler to sample spatial data given a lattice and neighborhood structure.}
 \usage{
 run_sequential_gibbs(lattice, neighbors = NULL, inits, conditional_sampler,
-  params, n.iter = 100)
+  params, directional = FALSE, grid = NULL, n.iter = 100)
 }
 \arguments{
 \item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
@@ -28,6 +28,10 @@ in the neighborhood for each point in the conclique. params is a list of paramet
 a value sampled from the specified conditional distribution given the data and parameters passed.}
 
 \item{params}{A list of parameters to be passed to the conditional_density function}
+
+\item{directional}{Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.}
+
+\item{grid}{A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE.}
 
 \item{n.iter}{Number of times to run the Gibbs sampler}
 }
