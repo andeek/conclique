@@ -17,9 +17,9 @@
 #'        sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
 #'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
 #'        a value sampled from the specified conditional distribution given the data and parameters passed.
+#' @param params A list of parameters to be passed to the conditional_density function 
 #' @param directional Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.
 #' @param grid A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE.       
-#' @param params A list of parameters to be passed to the conditional_density function 
 #' @param n.iter Number of times to run the Gibbs sampler
 #' @export
 #' @importFrom igraph get.graph.attribute
