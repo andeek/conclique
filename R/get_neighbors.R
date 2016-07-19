@@ -2,6 +2,8 @@
 #' 
 #' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
 #'        location. 
+#' @param directional Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.
+#' @param grid A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE. 
 #' @return A data frame N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice.
 #' @export
 #' @importFrom igraph V
