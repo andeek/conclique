@@ -23,7 +23,7 @@
 #' @param n.iter Number of times to run the Gibbs sampler
 #' @export
 #' @importFrom igraph get.graph.attribute
-run_conclique_gibbs <- function(lattice, conclique_cover, neighbors = NULL, inits, conditional_sampler, params, directional = FALSE, grid = NULL, n.iter = 100) {
+run_conclique_gibbs_R <- function(lattice, conclique_cover, neighbors = NULL, inits, conditional_sampler, params, directional = FALSE, grid = NULL, n.iter = 100) {
   
   stopifnot("igraph" %in% class(lattice) & "conclique_cover" %in% class(conclique_cover))
   dimvector <- get.graph.attribute(lattice, "dimvector")
@@ -43,8 +43,8 @@ run_conclique_gibbs <- function(lattice, conclique_cover, neighbors = NULL, init
       if(directional) {
         res <- lapply(neighbors, function(x) {
           q <- ncol(x) - 1
-          idx <- x[conc, -1]
-          dat <- cbind(data[idx[, 1]], data[idx[, 2]]) #TODO: for some reason there is an index out of bounds the other way
+          idx <- as.numeric(x[conc, -1])
+          dat <- matrix(data[idx], ncol = q)
           
           list(rowSums(dat, na.rm = TRUE), rowSums(!is.na(dat)))
         })
@@ -56,7 +56,7 @@ run_conclique_gibbs <- function(lattice, conclique_cover, neighbors = NULL, init
       } else {
         q <- ncol(neighbors) - 1
         
-        idx <- neighbors[conc, -1]
+        idx <- as.numeric(neighbors[conc, -1])
         dat <- matrix(data[idx], ncol = q)
         
         data_sums <- rowSums(dat, na.rm = TRUE)

@@ -30,7 +30,7 @@
 #' @importFrom dplyr mutate_
 #' @importFrom dplyr arrange_
 #' @importFrom tidyr spread_
-run_sequential_gibbs <- function(lattice, neighbors = NULL, inits, conditional_sampler, params, directional = FALSE, grid = NULL, n.iter = 100) {
+run_sequential_gibbs_R <- function(lattice, neighbors = NULL, inits, conditional_sampler, params, directional = FALSE, grid = NULL, n.iter = 100) {
   
   stopifnot("igraph" %in% class(lattice))
   dimvector <- get.graph.attribute(lattice, "dimvector")

@@ -10,7 +10,7 @@ NULL
 
 #' @rdname gaussian_single_param
 #' @export
-gaussian_single_param_sampler <- function(data, params) {
+gaussian_single_param_sampler_R <- function(data, params) {
   rho <- params$rho
   kappa <- params$kappa
   eta <- params$eta
@@ -22,7 +22,7 @@ gaussian_single_param_sampler <- function(data, params) {
 
 #' @rdname gaussian_single_param
 #' @export
-gaussian_single_param_cdf <- function(data, params) {
+gaussian_single_param_cdf_R <- function(data, params) {
   rho <- params$rho
   kappa <- params$kappa
   eta <- params$eta
