@@ -48,3 +48,29 @@ run_conclique_gibbs <- function(conclique_cover, neighbors, inits, conditional_s
     .Call('conclique_run_conclique_gibbs', PACKAGE = 'conclique', conclique_cover, neighbors, inits, conditional_sampler, params, n_iter)
 }
 
+#' Run a sequential Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
+#' 
+#' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
+#'        location. 
+#' @param inits Initial values for the lattice, formatted as a grid.
+#' @param neighbors A matrix N*N by (max // neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
+#'                  If NULL, will be calculated within the function.
+#' @param conditional_sampler A function that has three inputs: 
+#'        \itemize{
+#'          \item{value,}
+#'          \item{data, and}
+#'          \item{params.}
+#'        }
+#'        Value is a vector of values between 0 and 1. The data is a list containing two element, 
+#'        sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
+#'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
+#'        a value sampled from the specified conditional distribution given the data and parameters passed.
+#' @param params A list of parameters to be passed to the conditional_density function 
+#' @param directional Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.
+#' @param grid A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE. 
+#' @param n.iter Number of times to run the Gibbs sampler
+#' 
+run_sequential_gibbs <- function(neighbors, inits, conditional_sampler, params, n_iter = 100L) {
+    .Call('conclique_run_sequential_gibbs', PACKAGE = 'conclique', neighbors, inits, conditional_sampler, params, n_iter)
+}
+

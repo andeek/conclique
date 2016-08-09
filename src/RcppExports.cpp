@@ -46,3 +46,18 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// run_sequential_gibbs
+arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, Function conditional_sampler, List params, int n_iter);
+RcppExport SEXP conclique_run_sequential_gibbs(SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< List >::type neighbors(neighborsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type inits(initsSEXP);
+    Rcpp::traits::input_parameter< Function >::type conditional_sampler(conditional_samplerSEXP);
+    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
+    Rcpp::traits::input_parameter< int >::type n_iter(n_iterSEXP);
+    __result = Rcpp::wrap(run_sequential_gibbs(neighbors, inits, conditional_sampler, params, n_iter));
+    return __result;
+END_RCPP
+}

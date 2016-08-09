@@ -24,12 +24,6 @@
 #' @importFrom igraph V
 #' @importFrom igraph as_ids
 #' @importFrom igraph adjacent_vertices
-#' @importFrom dplyr %>%
-#' @importFrom dplyr group_by_
-#' @importFrom dplyr do_
-#' @importFrom dplyr mutate_
-#' @importFrom dplyr arrange_
-#' @importFrom tidyr spread_
 run_sequential_gibbs_R <- function(lattice, neighbors = NULL, inits, conditional_sampler, params, directional = FALSE, grid = NULL, n.iter = 100) {
   
   stopifnot("igraph" %in% class(lattice))

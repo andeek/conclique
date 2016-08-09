@@ -20,13 +20,13 @@ arma::vec gaussian_single_param_sampler(List data, List params) {
   double kappa = params["kappa"];
   double eta = params["eta"];
   
-  vec sums = data["sums"];
-  vec nums = data["nums"];
+  List sums = data["sums"];
+  List nums = data["nums"];
   
-  sums = sums[1];
-  nums = nums[1];
+  vec sums_vec = sums[0];
+  vec nums_vec = nums[0];
   
-  vec mean_structure = kappa + eta * (sums - nums * kappa);
+  vec mean_structure = kappa + eta * (sums_vec - nums_vec * kappa);
   vec res(rnorm(mean_structure.n_elem));
   res = res * rho + mean_structure;
   
