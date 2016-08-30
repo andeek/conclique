@@ -16,12 +16,19 @@ Include multiple matrices within the list for more complicated neighborhood stru
 
 \item{inits}{Initial values for the lattice, formatted as a grid.}
 
-\item{conditional_sampler}{A function that has three inputs: 
+\item{conditional_sampler}{The string name of a function that has three inputs: 
 \itemize{
   \item{value,}
   \item{data, and}
   \item{params.}
 }
+There are three built in samplers:
+ \itemize{
+   \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
+   \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
+   \item{"binary_two_param" - a binary sampler with two dependence parameters, and}
+ }
+If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the gloabl environment as this parameter.
 Value is a vector of values between 0 and 1. The data is a list containing two element, 
 sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
 in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
@@ -31,10 +38,6 @@ a value sampled from the specified conditional distribution given the data and p
 
 \item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
 location.}
-
-\item{directional}{Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.}
-
-\item{grid}{A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE.}
 
 \item{n.iter}{Number of times to run the Gibbs sampler}
 }

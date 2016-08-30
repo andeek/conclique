@@ -6,18 +6,6 @@
 
 using namespace Rcpp;
 
-// gaussian_single_param_sampler
-arma::vec gaussian_single_param_sampler(List data, List params);
-RcppExport SEXP conclique_gaussian_single_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
-    __result = Rcpp::wrap(gaussian_single_param_sampler(data, params));
-    return __result;
-END_RCPP
-}
 // gaussian_single_param_cdf
 arma::mat gaussian_single_param_cdf(List data, List params);
 RcppExport SEXP conclique_gaussian_single_param_cdf(SEXP dataSEXP, SEXP paramsSEXP) {
@@ -31,7 +19,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_conclique_gibbs
-arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat inits, Function conditional_sampler, List params, int n_iter);
+arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter);
 RcppExport SEXP conclique_run_conclique_gibbs(SEXP conclique_coverSEXP, SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -39,7 +27,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< List >::type conclique_cover(conclique_coverSEXP);
     Rcpp::traits::input_parameter< List >::type neighbors(neighborsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type inits(initsSEXP);
-    Rcpp::traits::input_parameter< Function >::type conditional_sampler(conditional_samplerSEXP);
+    Rcpp::traits::input_parameter< std::string >::type conditional_sampler(conditional_samplerSEXP);
     Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
     Rcpp::traits::input_parameter< int >::type n_iter(n_iterSEXP);
     __result = Rcpp::wrap(run_conclique_gibbs(conclique_cover, neighbors, inits, conditional_sampler, params, n_iter));
@@ -47,17 +35,53 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_sequential_gibbs
-arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, Function conditional_sampler, List params, int n_iter);
+arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter);
 RcppExport SEXP conclique_run_sequential_gibbs(SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< List >::type neighbors(neighborsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type inits(initsSEXP);
-    Rcpp::traits::input_parameter< Function >::type conditional_sampler(conditional_samplerSEXP);
+    Rcpp::traits::input_parameter< std::string >::type conditional_sampler(conditional_samplerSEXP);
     Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
     Rcpp::traits::input_parameter< int >::type n_iter(n_iterSEXP);
     __result = Rcpp::wrap(run_sequential_gibbs(neighbors, inits, conditional_sampler, params, n_iter));
+    return __result;
+END_RCPP
+}
+// gaussian_single_param_sampler
+arma::vec gaussian_single_param_sampler(List data, List params);
+RcppExport SEXP conclique_gaussian_single_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
+    __result = Rcpp::wrap(gaussian_single_param_sampler(data, params));
+    return __result;
+END_RCPP
+}
+// binary_single_param_sampler
+arma::vec binary_single_param_sampler(List data, List params);
+RcppExport SEXP conclique_binary_single_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
+    __result = Rcpp::wrap(binary_single_param_sampler(data, params));
+    return __result;
+END_RCPP
+}
+// binary_two_param_sampler
+arma::vec binary_two_param_sampler(List data, List params);
+RcppExport SEXP conclique_binary_two_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
+    __result = Rcpp::wrap(binary_two_param_sampler(data, params));
     return __result;
 END_RCPP
 }
