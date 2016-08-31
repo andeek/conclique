@@ -7,8 +7,6 @@ typedef arma::vec (*samplerPtr)(List, List);
 
 //' Run a conclique-based Gibbs sampler with a single dependency parameter to sample spatial data given a lattice and neighborhood structure.
 //' 
-//' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
-//'        location. 
 //' @param conclique_cover A list of class "conclique_cover" encoding the locations in each conclique for 
 //'        the conclique cover
 //' @param neighbors A list of matrices encoding the neighbors for each point, where the first column of each matrix is the location id of each location in the lattice. This could be the result from get_neighbors().
@@ -32,8 +30,8 @@ typedef arma::vec (*samplerPtr)(List, List);
 //'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
 //'        a value sampled from the specified conditional distribution given the data and parameters passed.
 //' @param params A list of parameters to be passed to the conditional_density function     
-//' @param n.iter Number of times to run the Gibbs sampler
-//' 
+//' @param n_iter Number of times to run the Gibbs sampler
+//' @export
 // [[Rcpp::export]]
 arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter = 100) {
   mat result(n_iter, inits.n_elem);
@@ -106,8 +104,6 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
 
 //' Run a sequential Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
 //' 
-//' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
-//'        location. 
 //' @param inits Initial values for the lattice, formatted as a grid.
 //' @param neighbors A matrix N*N by (max // neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
 //'                  If NULL, will be calculated within the function.
@@ -129,10 +125,8 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
 //'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
 //'        a value sampled from the specified conditional distribution given the data and parameters passed.
 //' @param params A list of parameters to be passed to the conditional_density function 
-//' @param directional Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.
-//' @param grid A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE. 
-//' @param n.iter Number of times to run the Gibbs sampler
-//' 
+//' @param n_iter Number of times to run the Gibbs sampler
+//' @export
 // [[Rcpp::export]]
 arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter = 100) {
   mat result(n_iter, inits.n_elem);

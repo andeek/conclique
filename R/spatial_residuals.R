@@ -12,7 +12,7 @@
 #'        at a value between 0 and 1 from the conditional distribution
 #' @param params A list of parameters to be passed to the conditional_density function 
 #' @export
-spatial_residuals <- function(data, neighbors, conditional_dsn, params) {
+spatial_residuals_R <- function(data, neighbors, conditional_dsn, params) {
   cdf_func <- match.fun(conditional_dsn)
   
   data_sums <- rowSums(matrix(data[neighbors[,-1]], ncol = ncol(neighbors) - 1), na.rm = TRUE)

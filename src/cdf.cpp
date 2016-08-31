@@ -11,27 +11,30 @@ using namespace Rcpp; using namespace arma;
 //' @name cdf
 
 //' @rdname cdf
+//' @export
 // [[Rcpp::export]]
-arma::mat gaussian_single_param_cdf(List data, List params) {
+arma::vec gaussian_single_param_cdf(List data, List params) {
   RNGScope scope;
   
   double rho = params["rho"];
   double kappa = params["kappa"];
   double eta = params["eta"];
   
-  vec sums = data["sums"];
-  vec nums = data["nums"];
-  mat datum = data["data"];
+  List sums = data["sums"];
+  List nums = data["nums"];
   
-  vec mean_structure = kappa + eta * (sums - nums * kappa);
-  NumericMatrix res(datum.n_rows, datum.n_cols);
+  vec sums_vec = sums[0];
+  vec nums_vec = nums[0];
+  
+  NumericVector datum = data["data"];
+  
+  vec mean_structure = kappa + eta * (sums_vec - nums_vec * kappa);
+  vec res(datum.length());
   for(int i = 0; i < mean_structure.n_elem; ++i) {
-    colvec column = datum.col(i);
-    NumericVector prob = pnorm(as<NumericVector>(wrap(column)), mean_structure(i), rho);
-    res(_, i) = prob;
+    NumericVector prob = pnorm(datum, mean_structure(i), rho);
+    res(i) = prob(i);
   }
-  mat res_mat(res.begin(), res.nrow(), res.ncol());
-  return(res_mat);
+  return(res);
 }
 
 

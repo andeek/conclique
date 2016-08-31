@@ -33,14 +33,7 @@ a value sampled from the specified conditional distribution given the data and p
 
 \item{params}{A list of parameters to be passed to the conditional_density function}
 
-\item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
-location.}
-
-\item{directional}{Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.}
-
-\item{grid}{A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE.}
-
-\item{n.iter}{Number of times to run the Gibbs sampler}
+\item{n_iter}{Number of times to run the Gibbs sampler}
 }
 \description{
 Run a sequential Gibbs sampler to sample spatial data given a lattice and neighborhood structure.

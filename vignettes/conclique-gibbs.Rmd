@@ -72,23 +72,12 @@ num_sample <- 10000
 
 ## conclique-gibbs
 time <- Sys.time()
-conclique_simulation <- run_conclique_gibbs(lattice, 
-                                            concliques, 
-                                            neighbors, 
-                                            inits, 
-                                            gaussian_single_param_sampler, 
-                                            params, 
-                                            n.iter = num_sample)
+conclique_simulation <- run_conclique_gibbs(concliques, neighbors, inits, "gaussian_single_param", params, num_sample)
 conc_time <- Sys.time() - time 
 
 ## sequential gibbs
 time <- Sys.time()
-sequential_simulation <- run_sequential_gibbs(lattice, 
-                                            neighbors, 
-                                            inits, 
-                                            gaussian_single_param_sampler, 
-                                            params, 
-                                            n.iter = num_sample)
+sequential_simulation <- run_sequential_gibbs(neighbors, inits, "gaussian_single_param", params, num_sample)
 seq_time <- Sys.time() - time
 ```
 

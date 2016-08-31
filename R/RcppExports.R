@@ -11,14 +11,13 @@
 NULL
 
 #' @rdname cdf
+#' @export
 gaussian_single_param_cdf <- function(data, params) {
     .Call('conclique_gaussian_single_param_cdf', PACKAGE = 'conclique', data, params)
 }
 
 #' Run a conclique-based Gibbs sampler with a single dependency parameter to sample spatial data given a lattice and neighborhood structure.
 #' 
-#' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
-#'        location. 
 #' @param conclique_cover A list of class "conclique_cover" encoding the locations in each conclique for 
 #'        the conclique cover
 #' @param neighbors A list of matrices encoding the neighbors for each point, where the first column of each matrix is the location id of each location in the lattice. This could be the result from get_neighbors().
@@ -42,16 +41,14 @@ gaussian_single_param_cdf <- function(data, params) {
 #'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
 #'        a value sampled from the specified conditional distribution given the data and parameters passed.
 #' @param params A list of parameters to be passed to the conditional_density function     
-#' @param n.iter Number of times to run the Gibbs sampler
-#' 
+#' @param n_iter Number of times to run the Gibbs sampler
+#' @export
 run_conclique_gibbs <- function(conclique_cover, neighbors, inits, conditional_sampler, params, n_iter = 100L) {
     .Call('conclique_run_conclique_gibbs', PACKAGE = 'conclique', conclique_cover, neighbors, inits, conditional_sampler, params, n_iter)
 }
 
 #' Run a sequential Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
 #' 
-#' @param lattice The simplified igraph object storing the lattice and dependency structure, ordered by 
-#'        location. 
 #' @param inits Initial values for the lattice, formatted as a grid.
 #' @param neighbors A matrix N*N by (max // neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
 #'                  If NULL, will be calculated within the function.
@@ -73,10 +70,8 @@ run_conclique_gibbs <- function(conclique_cover, neighbors, inits, conditional_s
 #'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
 #'        a value sampled from the specified conditional distribution given the data and parameters passed.
 #' @param params A list of parameters to be passed to the conditional_density function 
-#' @param directional Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.
-#' @param grid A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE. 
-#' @param n.iter Number of times to run the Gibbs sampler
-#' 
+#' @param n_iter Number of times to run the Gibbs sampler
+#' @export
 run_sequential_gibbs <- function(neighbors, inits, conditional_sampler, params, n_iter = 100L) {
     .Call('conclique_run_sequential_gibbs', PACKAGE = 'conclique', neighbors, inits, conditional_sampler, params, n_iter)
 }
@@ -91,17 +86,38 @@ run_sequential_gibbs <- function(neighbors, inits, conditional_sampler, params, 
 NULL
 
 #' @rdname sampler
+#' @export
 gaussian_single_param_sampler <- function(data, params) {
     .Call('conclique_gaussian_single_param_sampler', PACKAGE = 'conclique', data, params)
 }
 
 #' @rdname sampler
+#' @export
 binary_single_param_sampler <- function(data, params) {
     .Call('conclique_binary_single_param_sampler', PACKAGE = 'conclique', data, params)
 }
 
 #' @rdname sampler
+#' @export
 binary_two_param_sampler <- function(data, params) {
     .Call('conclique_binary_two_param_sampler', PACKAGE = 'conclique', data, params)
+}
+
+#' Get spatial residuals from data given a neighborhood structure and MRF model.
+#' 
+#' @param data A vector containing data values for each location in the lattice.
+#' @param neighbors A matrix N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
+#' @param conditional_cdf A function that has two inputs: 
+#'        \itemize{
+#'          \item{data, and}
+#'          \item{params.}
+#'        }
+#'        The data is a list containing data, sums, and nums, which contains the sampled values for each location, the neighboring locations of each location,
+#'        and the number of neighbors each location has, respectively. params is a list of parameter values. This function returns the inverse cdf 
+#'        at a value between 0 and 1 from the conditional distribution
+#' @param params A list of parameters to be passed to the conditional_density function 
+#' @export
+spatial_residuals <- function(data, neighbors, conditional_cdf, params) {
+    .Call('conclique_spatial_residuals', PACKAGE = 'conclique', data, neighbors, conditional_cdf, params)
 }
 

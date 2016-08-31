@@ -4,7 +4,7 @@
 #'        location. 
 #' @param directional Indication of if neighborhood needs to be split into North/South, East/West directions. Defaults to FALSE.
 #' @param grid A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE. 
-#' @return A data frame N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice.
+#' @return A list containting data frames N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice.
 #' @export
 #' @importFrom igraph V
 #' @importFrom igraph as_ids
@@ -48,6 +48,7 @@ get_neighbors <- function(lattice, directional = FALSE, grid = NULL) {
       spread_("key", "neighbors") %>%
       arrange_(~vertex) %>%
       data.matrix() -> res
+    res <- list(res)
   }
   
   return(res)

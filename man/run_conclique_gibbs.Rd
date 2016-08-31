@@ -36,10 +36,7 @@ a value sampled from the specified conditional distribution given the data and p
 
 \item{params}{A list of parameters to be passed to the conditional_density function}
 
-\item{lattice}{The simplified igraph object storing the lattice and dependency structure, ordered by 
-location.}
-
-\item{n.iter}{Number of times to run the Gibbs sampler}
+\item{n_iter}{Number of times to run the Gibbs sampler}
 }
 \description{
 Run a conclique-based Gibbs sampler with a single dependency parameter to sample spatial data given a lattice and neighborhood structure.

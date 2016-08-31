@@ -7,7 +7,7 @@
 using namespace Rcpp;
 
 // gaussian_single_param_cdf
-arma::mat gaussian_single_param_cdf(List data, List params);
+arma::vec gaussian_single_param_cdf(List data, List params);
 RcppExport SEXP conclique_gaussian_single_param_cdf(SEXP dataSEXP, SEXP paramsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -82,6 +82,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< List >::type data(dataSEXP);
     Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
     __result = Rcpp::wrap(binary_two_param_sampler(data, params));
+    return __result;
+END_RCPP
+}
+// spatial_residuals
+arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params);
+RcppExport SEXP conclique_spatial_residuals(SEXP dataSEXP, SEXP neighborsSEXP, SEXP conditional_cdfSEXP, SEXP paramsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::vec >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< List >::type neighbors(neighborsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type conditional_cdf(conditional_cdfSEXP);
+    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
+    __result = Rcpp::wrap(spatial_residuals(data, neighbors, conditional_cdf, params));
     return __result;
 END_RCPP
 }

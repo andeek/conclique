@@ -12,6 +12,7 @@ using namespace Rcpp; using namespace arma;
 
 
 //' @rdname sampler
+//' @export
 // [[Rcpp::export]]
 arma::vec gaussian_single_param_sampler(List data, List params) {
   RNGScope scope;
@@ -34,6 +35,7 @@ arma::vec gaussian_single_param_sampler(List data, List params) {
 }
 
 //' @rdname sampler
+//' @export
 // [[Rcpp::export]]
 arma::vec binary_single_param_sampler(List data, List params) {
   RNGScope scope;
@@ -58,6 +60,7 @@ arma::vec binary_single_param_sampler(List data, List params) {
 }
 
 //' @rdname sampler
+//' @export
 // [[Rcpp::export]]
 arma::vec binary_two_param_sampler(List data, List params) {
   RNGScope scope;

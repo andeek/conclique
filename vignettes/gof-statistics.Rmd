@@ -35,20 +35,8 @@ params <- list(rho = 1, kappa = 0, eta = .24)
 inits <- matrix(0, nrow = N, ncol = N)
 num_sample <- 10000
 
-conclique_simulation <- run_conclique_gibbs(lattice, 
-                                            concliques, 
-                                            neighbors, 
-                                            inits, 
-                                            gaussian_single_param_sampler, 
-                                            params, 
-                                            n.iter = num_sample)
-
-sequential_simulation <- run_sequential_gibbs(lattice, 
-                                            neighbors, 
-                                            inits, 
-                                            gaussian_single_param_sampler, 
-                                            params, 
-                                            n.iter = num_sample)
+conclique_simulation <- run_conclique_gibbs(concliques, neighbors, inits, "gaussian_single_param", params, num_sample)
+sequential_simulation <- run_sequential_gibbs(neighbors, inits, "gaussian_single_param", params, num_sample)
 
 ```
 
@@ -67,7 +55,7 @@ The spatial residuals are obtainable using the `conclique` package. We can conti
 
 ```{r resids}
 conclique_dat <- conclique_simulation[num_sample, ]
-conclique_resids <- spatial_residuals(conclique_dat, neighbors, gaussian_single_param_cdf, params)
+conclique_resids <- spatial_residuals(conclique_dat, neighbors, "gaussian_single_param", params)
 ```
 
 ```{r resids-plot, echo=FALSE, fig.cap="Looking at the emprirical cdf of generalized spatial residuals from simulated Gaussian MRF with $\\rho = 1, \\kappa = 0, \\eta = .24$ versus the correct model. The black line represents the cdf of a Uniform$(0,1)$."}
@@ -94,7 +82,7 @@ ecdf_vals %>%
 We could also look at the residuals from a poorly fit model, say with $\eta = 0.05$.
 
 ```{r resids_err}
-conclique_resids_err <- spatial_residuals(conclique_dat, neighbors, gaussian_single_param_cdf, list(rho = 1, kappa = 0, eta = 0.05))
+conclique_resids_err <- spatial_residuals(conclique_dat, neighbors, "gaussian_single_param", list(rho = 1, kappa = 0, eta = 0.05))
 ```
 
 ```{r resids_err-plot, echo=FALSE, fig.cap="Looking at the emprirical cdf of generalized spatial residuals from simulated Gaussian MRF with $\\rho = 1, \\kappa = 0, \\eta = .24$ versus an incorrect model with $\\eta = .05$. The black line represents the cdf of a Uniform$(0,1)$."}

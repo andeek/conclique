@@ -37,8 +37,3 @@ gof_statistics <- function(residuals, conclique_cover, statistic = c("ks", "cvm"
   }
   do.call(aggregate, s)
 }
-
-ecdf_vals <- function(data, points) {
-  fn <- ecdf(data)
-  fn(points)
-}
