@@ -1,12 +1,12 @@
 Package: conclique
-Title: A collection of helpful functions for dealing with spatial data and concliques
+Title: Gibbs Sampling for Spatial Data and Concliques
 Version: 0.0.0.9000
 Authors@R: c(person("Andee", "Kaplan", email = "ajkaplan@iastate.edu", role = c("aut", "cre")),
              person("Daniel", "Nordman", email = "dnordman@iastate.edu", role = c("aut")))
-Description: This package is a collection of helpful functions for dealing with spatial data and concliques. 
-             Currently it contains functions for creating a minimal conclique cover as well as assigning the concliques
+Description: Gibbs sampling for spatial data using Markov Random Fields and concliques. 
+             Currently contains functionality for creating a minimal conclique cover as well as assigning the concliques
              to a regular lattice for plotting and simulation purposes. This package is under development and will 
-             include additional functions for simulation of spatial data using a conclique-based Gibbs sampler.
+             include simulation of spatial data using a conclique-based Gibbs sampler.
 URL: https://github.com/andeek/conclique
 BugReports: https://github.com/andeek/conclique/issues
 Depends:
@@ -15,7 +15,8 @@ Imports:
     dplyr,
     igraph,
     lazyeval,
-    tidyr
+    tidyr,
+    Rcpp
 Suggests:
     roxygen2,
     ggplot2,
@@ -26,3 +27,6 @@ License: GPL-3
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
+LinkingTo:
+    Rcpp,
+    RcppArmadillo

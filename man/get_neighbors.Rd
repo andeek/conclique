@@ -15,7 +15,7 @@ location.}
 \item{grid}{A grid storing the locations of each point in the lattice. Only necessary is direction = TRUE.}
 }
 \value{
-A data frame N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice.
+A list containting data frames N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice.
 }
 \description{
 Get the neighbors of each location in the lattice.
