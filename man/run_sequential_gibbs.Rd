@@ -13,9 +13,8 @@ If NULL, will be calculated within the function.}
 
 \item{inits}{Initial values for the lattice, formatted as a grid.}
 
-\item{conditional_sampler}{The string name of a function that has three inputs: 
+\item{conditional_sampler}{The string name of a function that has two inputs: 
 \itemize{
-  \item{value,}
   \item{data, and}
   \item{params.}
 }
@@ -23,15 +22,15 @@ There are three built in samplers:
  \itemize{
    \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
    \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
-   \item{"binary_two_param" - a binary sampler with two dependence parameters, and}
+   \item{"binary_two_param" - a binary sampler with two dependence parameters.}
  }
 If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the gloabl environment as this parameter.
-Value is a vector of values between 0 and 1. The data is a list containing two element, 
+The input "data" is a list containing two elements, 
 sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
-in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
+in the neighborhood for each point in the conclique. The input "params" is a list of parameter values. This function returns 
 a value sampled from the specified conditional distribution given the data and parameters passed.}
 
-\item{params}{A list of parameters to be passed to the conditional_density function}
+\item{params}{A list of parameters to be passed to the conditional_sampler function}
 
 \item{n_iter}{Number of times to run the Gibbs sampler}
 }
