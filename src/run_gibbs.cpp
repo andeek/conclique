@@ -5,16 +5,15 @@ using namespace Rcpp; using namespace arma;
 
 typedef arma::vec (*samplerPtr)(List, List);
 
-//' Run a conclique-based Gibbs sampler with a single dependency parameter to sample spatial data given a lattice and neighborhood structure.
+//' Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
 //' 
 //' @param conclique_cover A list of class "conclique_cover" encoding the locations in each conclique for 
 //'        the conclique cover
 //' @param neighbors A list of matrices encoding the neighbors for each point, where the first column of each matrix is the location id of each location in the lattice. This could be the result from get_neighbors().
 //'                  Include multiple matrices within the list for more complicated neighborhood structures in your corresponding sampler, for example a (two) dependency parameter for N/S, E/W.
 //' @param inits Initial values for the lattice, formatted as a grid.
-//' @param conditional_sampler The string name of a function that has three inputs: 
+//' @param conditional_sampler The string name of a function that has two inputs: 
 //'        \itemize{
-//'          \item{value,}
 //'          \item{data, and}
 //'          \item{params.}
 //'        }
@@ -22,14 +21,14 @@ typedef arma::vec (*samplerPtr)(List, List);
 //'         \itemize{
 //'           \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
 //'           \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
-//'           \item{"binary_two_param" - a binary sampler with two dependence parameters, and}
+//'           \item{"binary_two_param" - a binary sampler with two dependence parameters.}
 //'         }
 //'        If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the gloabl environment as this parameter.
-//'        Value is a vector of values between 0 and 1. The data is a list containing two element, 
+//'        The input "data" is a list containing two elements, 
 //'        sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
-//'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
+//'        in the neighborhood for each point in the conclique. The input "params" is a list of parameter values. This function returns 
 //'        a value sampled from the specified conditional distribution given the data and parameters passed.
-//' @param params A list of parameters to be passed to the conditional_density function     
+//' @param params A list of parameters to be passed to the conditional_sampler function     
 //' @param n_iter Number of times to run the Gibbs sampler
 //' @export
 // [[Rcpp::export]]
@@ -107,9 +106,8 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
 //' @param inits Initial values for the lattice, formatted as a grid.
 //' @param neighbors A matrix N*N by (max // neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().
 //'                  If NULL, will be calculated within the function.
-//' @param conditional_sampler The string name of a function that has three inputs: 
+//' @param conditional_sampler The string name of a function that has two inputs: 
 //'        \itemize{
-//'          \item{value,}
 //'          \item{data, and}
 //'          \item{params.}
 //'        }
@@ -117,14 +115,14 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
 //'         \itemize{
 //'           \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
 //'           \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
-//'           \item{"binary_two_param" - a binary sampler with two dependence parameters, and}
+//'           \item{"binary_two_param" - a binary sampler with two dependence parameters.}
 //'         }
 //'        If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the gloabl environment as this parameter.
-//'        Value is a vector of values between 0 and 1. The data is a list containing two element, 
+//'        The input "data" is a list containing two elements, 
 //'        sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
-//'        in the neighborhood for each point in the conclique. params is a list of parameter values. This function returns 
+//'        in the neighborhood for each point in the conclique. The input "params" is a list of parameter values. This function returns 
 //'        a value sampled from the specified conditional distribution given the data and parameters passed.
-//' @param params A list of parameters to be passed to the conditional_density function 
+//' @param params A list of parameters to be passed to the conditional_sampler function 
 //' @param n_iter Number of times to run the Gibbs sampler
 //' @export
 // [[Rcpp::export]]
