@@ -39,8 +39,6 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
   int N = neighbors.length();
   List sums(N);
   List nums(N);
-  List loc_u(N);
-  List loc_v(N);
   int i, j, n, m;
   
   bool r_func = true;
@@ -64,13 +62,14 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
   for(i = 0; i < n_iter; ++i) { // iterations
     for(j = 0; j < Q; ++j) { // concliques
       uvec conc = conclique_cover[j];
+      vec loc_u(conc.n_elem);
+      vec loc_v(conc.n_elem);
+      
       for(n = 0; n < N; ++n) { // neighborhood structures
         mat neigh = neighbors[n];
         int q = neigh.n_cols - 1;
         uvec cols = regspace<uvec>(1,  1,  q);
         uvec idx = conv_to<uvec>::from(vectorise(neigh.submat(conc - 1, cols)));
-        
-        vec s = neigh.col(0);
         
         mat dat = data.elem(idx - 1);
         dat.reshape(idx.n_elem/q, q);
@@ -83,17 +82,23 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
         } // end m
         sums[n] = sums_inner;
         nums[n] = nums_inner;
-        
-        vec row = conv_to<vec>::from(floor(s / data.n_cols));
-        loc_v[n] = row;
-        loc_u[n] = s - row*data.n_cols;
       } // end n
       
+      // location information
+      mat neigh = neighbors[0];
+      neigh = neigh.rows(conc - 1);
+      vec s = neigh.col(0) - 1;
+      vec row = conv_to<vec>::from(floor(s / data.n_cols));
+      loc_v = row;
+      loc_u = s - row*data.n_cols;
+      
+      // store in a list
       List sums_nums_loc;
       sums_nums_loc["sums"] = sums;
       sums_nums_loc["nums"] = nums;
       sums_nums_loc["u"] = loc_u;
       sums_nums_loc["v"] = loc_v;
+      
       if(r_func) {
         NumericVector new_data = sampler(sums_nums_loc, params);
         vec new_data_vec(new_data.begin(), new_data.length());
@@ -107,7 +112,6 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
     data.reshape(1, data.n_elem);
     result.row(i) = data;
   } // end i
-  
   return(result);
 }
 

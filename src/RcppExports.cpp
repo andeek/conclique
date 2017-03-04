@@ -19,7 +19,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_conclique_gibbs
-arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter);
+List run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter);
 RcppExport SEXP conclique_run_conclique_gibbs(SEXP conclique_coverSEXP, SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
