@@ -39,6 +39,8 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
   int N = neighbors.length();
   List sums(N);
   List nums(N);
+  List loc_u(N);
+  List loc_v(N);
   int i, j, n, m;
   
   bool r_func = true;
@@ -68,6 +70,8 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
         uvec cols = regspace<uvec>(1,  1,  q);
         uvec idx = conv_to<uvec>::from(vectorise(neigh.submat(conc - 1, cols)));
         
+        vec s = neigh.col(0);
+        
         mat dat = data.elem(idx - 1);
         dat.reshape(idx.n_elem/q, q);
         
@@ -79,17 +83,23 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
         } // end m
         sums[n] = sums_inner;
         nums[n] = nums_inner;
+        
+        vec row = conv_to<vec>::from(floor(s / data.n_cols));
+        loc_v[n] = row;
+        loc_u[n] = s - row*data.n_cols;
       } // end n
       
-      List sums_nums;
-      sums_nums["sums"] = sums;
-      sums_nums["nums"] = nums;
+      List sums_nums_loc;
+      sums_nums_loc["sums"] = sums;
+      sums_nums_loc["nums"] = nums;
+      sums_nums_loc["u"] = loc_u;
+      sums_nums_loc["v"] = loc_v;
       if(r_func) {
-        NumericVector new_data = sampler(sums_nums, params);
+        NumericVector new_data = sampler(sums_nums_loc, params);
         vec new_data_vec(new_data.begin(), new_data.length());
         data.elem(conc - 1) = new_data_vec;
       } else {
-        vec new_data_vec = sampler_map[conditional_sampler](sums_nums, params);
+        vec new_data_vec = sampler_map[conditional_sampler](sums_nums_loc, params);
         data.elem(conc - 1) = new_data_vec;
       }
       
