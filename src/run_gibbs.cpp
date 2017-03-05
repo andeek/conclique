@@ -42,6 +42,15 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
   List nums(N);
   int i, j, n, m;
   
+  // location information
+  mat neigh = neighbors[0]; //this should always work because there is always a first element of this list
+  vec s = neigh.col(0) - 1;
+  vec row = conv_to<vec>::from(floor(s / data.n_cols));
+  vec loc_u(s.n_elem);
+  vec loc_v(s.n_elem);
+  loc_v = row + 1;
+  loc_u = s - row*data.n_cols + 1;
+  
   bool r_func = true;
   Environment global = Environment::global_env();
   Function sampler("identity"); //initialize sampler
@@ -82,22 +91,15 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
         sums[n] = sums_inner;
         nums[n] = nums_inner;
       } // end n
-
-      // location information
-      mat neigh = neighbors[0];
-      neigh = neigh.rows(conc - 1);
-      vec s = neigh.col(0) - 1;
-      vec row = conv_to<vec>::from(floor(s / data.n_cols));
-      vec loc_u(conc.n_elem);
-      vec loc_v(conc.n_elem);
-      loc_v = row + 1;
-      loc_u = s - row*data.n_cols + 1;
-
+      
+      vec u = loc_u.elem(conc - 1);
+      vec v = loc_v.elem(conc - 1);
+      
       // store in a list
       List sums_nums_loc = List::create(Named("sums") = sums,
                                         Named("nums") = nums,
-                                        Named("u") = loc_u,
-                                        Named("v") = loc_v);
+                                        Named("u") = u,
+                                        Named("v") = v);
 
       if(r_func) {
         NumericVector new_data = sampler(sums_nums_loc, params);
@@ -151,6 +153,15 @@ arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, std::string cond
   uvec rows = uvec(1);
   int i, j, n, m, q;
   
+  // location information
+  mat neigh = neighbors[0]; //this should always work because there is always a first element of this list
+  vec s = neigh.col(0) - 1;
+  vec row = conv_to<vec>::from(floor(s / data.n_cols));
+  vec loc_u(s.n_elem);
+  vec loc_v(s.n_elem);
+  loc_v = row + 1;
+  loc_u = s - row*data.n_cols + 1;
+  
   bool r_func = true;
   Environment global = Environment::global_env();
   Function sampler("identity"); //initialize sampler
@@ -185,21 +196,14 @@ arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, std::string cond
           nums[n] = dat.n_elem;
         } // end n
         
-        // location information
-        mat neigh = neighbors[0];
-        neigh = neigh.rows(rows);
-        vec s = neigh.col(0) - 1;
-        vec row = conv_to<vec>::from(floor(s / data.n_cols));
-        vec loc_u(rows.n_elem);
-        vec loc_v(rows.n_elem);
-        loc_v = row + 1;
-        loc_u = s - row*data.n_cols + 1;
+        int u = loc_u(j);
+        int v = loc_v(j);
         
         // store in a list
         List sums_nums_loc = List::create(Named("sums") = sums,
                                           Named("nums") = nums,
-                                          Named("u") = loc_u,
-                                          Named("v") = loc_v);
+                                          Named("u") = u,
+                                          Named("v") = v);
       
       if(r_func) {
         double new_data = as<double>(sampler(sums_nums_loc, params));
