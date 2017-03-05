@@ -23,4 +23,3 @@ Assign conclique cover to regular lattice positions
     assign_concliques(lattice, concliques)
 }
 }
-

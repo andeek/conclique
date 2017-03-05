@@ -25,4 +25,3 @@ at a value between 0 and 1 from the conditional distribution}
 \description{
 Get spatial residuals from data given a neighborhood structure and MRF model.
 }
-

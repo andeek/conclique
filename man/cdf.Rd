@@ -17,4 +17,3 @@ in the neighborhood for each point in the conclique.}
 \description{
 Functions for using conclique based GOF test.
 }
-

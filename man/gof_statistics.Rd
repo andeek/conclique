@@ -23,4 +23,3 @@ max ("max"). Mean is the default. Can also be a name of a user defined aggregati
 \description{
 Get goodness of fit statistics for the spatial residuals of a MRF model.
 }
-

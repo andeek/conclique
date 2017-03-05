@@ -20,4 +20,3 @@ Create a minimal conclique cover for a regular lattice
     concliques <- min_conclique_cover(lattice)
 }
 }
-

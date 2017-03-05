@@ -11,4 +11,3 @@ Currently contains functionality for creating a minimal conclique cover as well 
 to a regular lattice for plotting and simulation purposes. This package is under development and will 
 include simulation of spatial data using a conclique-based Gibbs sampler.
 }
-

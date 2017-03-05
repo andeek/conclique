@@ -20,4 +20,3 @@ A list containting data frames N*N by (max # neighbors) + 1, where the first col
 \description{
 Get the neighbors of each location in the lattice.
 }
-

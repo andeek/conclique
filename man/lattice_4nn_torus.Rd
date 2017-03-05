@@ -17,4 +17,3 @@ Create a regular lattice of specified size with four-nearest neighborhood depend
     lattice <- lattice_4nn_torus(c(6,6))
 }
 }
-

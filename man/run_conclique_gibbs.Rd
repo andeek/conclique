@@ -40,4 +40,3 @@ a value sampled from the specified conditional distribution given the data and p
 \description{
 Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
 }
-
