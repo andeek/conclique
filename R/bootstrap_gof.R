@@ -62,7 +62,7 @@ bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_s
   
   res$t <- gof_stat
   res$p.value <- sum(gof_stat >= gof_stat_star)/length(gof_stat_star)
-  if(quantiles) {
+  if(!is.null(quantiles)) {
     res$quantiles <- quantile(gof_stat_star, quantiles)
   }
   
