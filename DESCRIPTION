@@ -13,13 +13,14 @@ Depends:
     R (>= 3.2.2)
 Imports:
     dplyr,
+    ggplot2,
     igraph,
     lazyeval,
     tidyr,
-    Rcpp
+    Rcpp,
+    stats
 Suggests:
     roxygen2,
-    ggplot2,
     knitr,
     rmarkdown,
     scales

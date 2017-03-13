@@ -27,10 +27,12 @@ There are three built in samplers:
    \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
    \item{"binary_two_param" - a binary sampler with two dependence parameters.}
  }
-If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the gloabl environment as this parameter.
-The input "data" is a list containing two elements, 
+If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the global environment as this parameter.
+The input "data" is a list containing at least two elements, 
 sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
-in the neighborhood for each point in the conclique. The input "params" is a list of parameter values. This function returns 
+in the neighborhood for each point in the conclique. In addition, the data can contain two additional elements, u and v, 
+which are vectors that contain the horizontal and vertical location of each point in space.
+The input "params" is a list of parameter values. This function returns 
 a value sampled from the specified conditional distribution given the data and parameters passed.}
 
 \item{params}{A list of parameters to be passed to the conditional_sampler function}

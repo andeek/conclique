@@ -16,9 +16,18 @@ spatial_residuals(data, neighbors, conditional_cdf, params)
   \item{data, and}
   \item{params.}
 }
-The data is a list containing data, sums, and nums, which contains the sampled values for each location, the neighboring locations of each location,
-and the number of neighbors each location has, respectively. params is a list of parameter values. This function returns the inverse cdf 
-at a value between 0 and 1 from the conditional distribution}
+There are three built in cdfs:
+ \itemize{
+   \item{"gaussian_single_param" - a Gaussian cdf with a single dependence parameter,}
+   \item{"binary_single_param" - a binary cdf with a single dependence parameter, and}
+   \item{"binary_two_param" - a binary cdf with two dependence parameters.}
+ }
+If the user chooses to write their own cdf in R, they must pass the name of the cdf function that is available in the global environment as this parameter.
+The input "data" is a list containing at least two elements, 
+sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
+in the neighborhood for each point in the conclique. In addition, the data can contain two additional elements, u and v, 
+which are vectors that contain the horizontal and vertical location of each point in space.
+The input "params" is a list of parameter values. This function returns the inverse cdf at a value between 0 and 1 from the conditional distribution}
 
 \item{params}{A list of parameters to be passed to the conditional_density function}
 }
