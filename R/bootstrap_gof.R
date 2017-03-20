@@ -49,6 +49,7 @@
 #' 
 #' @import ggplot2
 #' @importFrom stats quantile
+#' @importFrom stats density
 #' @export
 bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_sampler, conditional_cdf, params, B = 1000, statistic = c("ks", "cvm"), aggregate = c("mean", "max"), quantiles = NULL, plot.include = FALSE) {
   y_star <- run_conclique_gibbs(conclique_cover, neighbors, inits, conditional_sampler, params, B)
@@ -61,7 +62,7 @@ bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_s
   res <- list()
   
   res$t <- gof_stat
-  res$p.value <- sum(gof_stat >= gof_stat_star)/length(gof_stat_star)
+  res$p.value <- (sum(gof_stat_star >= gof_stat) + 1)/(B + 1)
   if(!is.null(quantiles)) {
     res$quantiles <- quantile(gof_stat_star, quantiles)
   }
@@ -70,7 +71,7 @@ bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_s
     res$plot <- ggplot() +
       geom_density(aes(gof_stat_star), fill = "grey20", alpha = .5) +
       geom_vline(aes(xintercept = gof_stat), colour = "red") +
-      geom_text(aes(x = gof_stat + .25, y = 1, label = paste0("T = ", gof_stat, "\np = ", res$p.value)), family = "serif") +
+      geom_text(aes(x = gof_stat + diff(range(gof_stat_star))/100, y = max(density(gof_stat_star)$y)*.75, label = paste0("T = ", round(gof_stat, 4), "\np = ", round(res$p.value, 4))), family = "serif", hjust = 0) +
       xlab("GOF Statistic")
   }
 
