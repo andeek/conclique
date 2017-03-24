@@ -27,22 +27,25 @@ typedef arma::vec (*cdfPtr)(List, List);
 //'        which are vectors that contain the horizontal and vertical location of each point in space.
 //'        The input "params" is a list of parameter values. This function returns the inverse cdf at a value between 0 and 1 from the conditional distribution
 //' @param params A list of parameters to be passed to the conditional_density function 
+//' @param ncols A integer of the number of columns in the original grid. Only necessary if dealing with "u" and "v" in cdf function.
 //' @export
 // [[Rcpp::export]]
-arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params) {
+arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params, int ncols = 0) {
   int N = neighbors.length();
   List sums(N);
   List nums(N);
   int n, m;
+  vec loc_u(N), loc_v(N);
   
-  // location information
-  mat neigh = neighbors[0]; //this should always work because there is always a first element of this list
-  vec s = neigh.col(0) - 1;
-  vec row = conv_to<vec>::from(floor(s / data.n_cols));
-  vec loc_u(s.n_elem);
-  vec loc_v(s.n_elem);
-  loc_v = row + 1;
-  loc_u = s - row*data.n_cols + 1;
+  if(ncols > 0) {
+    // location information
+    mat neigh = neighbors[0]; //this should always work because there is always a first element of this list
+    vec s = neigh.col(0) - 1;
+    vec row = conv_to<vec>::from(floor(s / ncols));
+    loc_v = row + 1;
+    loc_u = s - row*data.n_cols + 1;
+  }
+
   
   bool r_func = true;
   Environment global = Environment::global_env();
@@ -78,9 +81,11 @@ arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditio
   // store in a list
   List sums_nums_loc = List::create(Named("data") = data,
                                     Named("sums") = sums,
-                                    Named("nums") = nums,
-                                    Named("u") = loc_u,
-                                    Named("v") = loc_v);
+                                    Named("nums") = nums);
+  if(ncols > 0) {
+    sums_nums_loc.push_back(loc_u, "u");
+    sums_nums_loc.push_back(loc_v, "v");
+  }
 
   if(r_func) {
     Function cdf = global[conditional_cdf];

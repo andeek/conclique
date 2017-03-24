@@ -86,8 +86,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // spatial_residuals
-arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params);
-RcppExport SEXP conclique_spatial_residuals(SEXP dataSEXP, SEXP neighborsSEXP, SEXP conditional_cdfSEXP, SEXP paramsSEXP) {
+arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params, int ncols);
+RcppExport SEXP conclique_spatial_residuals(SEXP dataSEXP, SEXP neighborsSEXP, SEXP conditional_cdfSEXP, SEXP paramsSEXP, SEXP ncolsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -95,7 +95,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< List >::type neighbors(neighborsSEXP);
     Rcpp::traits::input_parameter< std::string >::type conditional_cdf(conditional_cdfSEXP);
     Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
-    rcpp_result_gen = Rcpp::wrap(spatial_residuals(data, neighbors, conditional_cdf, params));
+    Rcpp::traits::input_parameter< int >::type ncols(ncolsSEXP);
+    rcpp_result_gen = Rcpp::wrap(spatial_residuals(data, neighbors, conditional_cdf, params, ncols));
     return rcpp_result_gen;
 END_RCPP
 }
