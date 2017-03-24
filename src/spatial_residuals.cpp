@@ -30,6 +30,20 @@ typedef arma::vec (*cdfPtr)(List, List);
 //' @export
 // [[Rcpp::export]]
 arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params) {
+  int N = neighbors.length();
+  List sums(N);
+  List nums(N);
+  int n, m;
+  
+  // location information
+  mat neigh = neighbors[0]; //this should always work because there is always a first element of this list
+  vec s = neigh.col(0) - 1;
+  vec row = conv_to<vec>::from(floor(s / data.n_cols));
+  vec loc_u(s.n_elem);
+  vec loc_v(s.n_elem);
+  loc_v = row + 1;
+  loc_u = s - row*data.n_cols + 1;
+  
   bool r_func = true;
   Environment global = Environment::global_env();
   
@@ -41,11 +55,6 @@ arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditio
   it = cdf_map.find(conditional_cdf);
   if (it != cdf_map.end())
     r_func = false;
-    
-  int N = neighbors.length();
-  List sums(N);
-  List nums(N);
-  int n, m;
   
   for(n = 0; n < N; ++n) { // neighborhood structures
     mat neigh = neighbors[n];
@@ -66,18 +75,20 @@ arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditio
     nums[n] = nums_inner;
   } // end n
   
-  List sums_nums;
-  sums_nums["data"] = data;
-  sums_nums["sums"] = sums;
-  sums_nums["nums"] = nums;
+  // store in a list
+  List sums_nums_loc = List::create(Named("data") = data,
+                                    Named("sums") = sums,
+                                    Named("nums") = nums,
+                                    Named("u") = loc_u,
+                                    Named("v") = loc_v);
 
   if(r_func) {
     Function cdf = global[conditional_cdf];
-    NumericVector resid = cdf(sums_nums, params);
+    NumericVector resid = cdf(sums_nums_loc, params);
     vec res(resid.begin(), resid.length());
     return(res);
   } else {
-    vec res = cdf_map[conditional_cdf](sums_nums, params);
+    vec res = cdf_map[conditional_cdf](sums_nums_loc, params);
     return(res);
   }
 
