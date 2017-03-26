@@ -52,7 +52,11 @@
 #' @importFrom stats density
 #' @export
 bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_sampler, conditional_cdf, params, B = 1000, statistic = c("ks", "cvm"), aggregate = c("mean", "max"), quantiles = NULL, plot.include = FALSE) {
-  y_star <- run_conclique_gibbs(conclique_cover, neighbors, inits, conditional_sampler, params, B)
+  burnin <- 500
+  thin <- 5
+  iter <- B*thin + burnin
+  y_star <- run_conclique_gibbs(conclique_cover, neighbors, inits, conditional_sampler, params, iter)
+  y_star <- y_star[(burnin:iter)[burnin:iter %% thin == 1], ]
   resids_star <- apply(y_star, 1, spatial_residuals, neighbors, conditional_cdf, params) %>% t()
   gof_stat_star <- apply(resids_star, 1, gof_statistics, conclique_cover, statistic, aggregate)
   

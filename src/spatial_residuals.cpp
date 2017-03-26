@@ -1,4 +1,4 @@
-//include <RcppArmadillo.h>
+#include <RcppArmadillo.h>
 #include "cdf.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp; using namespace arma;
