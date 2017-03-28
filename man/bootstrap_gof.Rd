@@ -5,7 +5,7 @@
 \title{Get reference distribution for goodness of fit statistics for the spatial residuals of a MRF model.}
 \usage{
 bootstrap_gof(data, conclique_cover, neighbors, inits, conditional_sampler,
-  conditional_cdf, params, B = 1000, statistic = c("ks", "cvm"),
+  conditional_cdf, fit_model, params0, B = 1000, statistic = c("ks", "cvm"),
   aggregate = c("mean", "max"), quantiles = NULL, plot.include = FALSE)
 }
 \arguments{
@@ -53,7 +53,17 @@ in the neighborhood for each point in the conclique. In addition, the data can c
 which are vectors that contain the horizontal and vertical location of each point in space.
 The input "params" is a list of parameter values. This function returns the inverse cdf at a value between 0 and 1 from the conditional distribution}
 
-\item{params}{A list of fitted parameters to be passed to the conditional_sampler and the conditional_cdf function}
+\item{fit_model}{A function that has three inputs:
+\itemize{
+  \item{data}
+  \item{neighbors, and}
+  \item{params0.}
+}
+The input "data" is a vector containing data values for each location in the lattice.
+The input "neighbors" is a matrix N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice.
+The input "params0" is a list of parameter values. This function should return a list of fitted parameter values with the same name is params0.}
+
+\item{params0}{A named list of parameter initialization points.}
 
 \item{B}{The number of bootstrap samples to take, defaults to 1000}
 

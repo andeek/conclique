@@ -38,7 +38,16 @@
 #'        in the neighborhood for each point in the conclique. In addition, the data can contain two additional elements, u and v, 
 #'        which are vectors that contain the horizontal and vertical location of each point in space.
 #'        The input "params" is a list of parameter values. This function returns the inverse cdf at a value between 0 and 1 from the conditional distribution
-#' @param params A list of fitted parameters to be passed to the conditional_sampler and the conditional_cdf function     
+#' @param fit_model A function that has three inputs:
+#'        \itemize{
+#'          \item{data}
+#'          \item{neighbors, and}
+#'          \item{params0.}
+#'        }
+#'        The input "data" is a vector containing data values for each location in the lattice.
+#'        The input "neighbors" is a matrix N*N by (max # neighbors) + 1, where the first column is the location id of each location in the lattice.
+#'        The input "params0" is a list of parameter values. This function should return a list of fitted parameter values with the same name is params0.
+#' @param params0 A named list of parameter initialization points.     
 #' @param B The number of bootstrap samples to take, defaults to 1000
 #' @param statistic Which goodness of fit statistic to use, Kolmogorov-Smirnov ("ks") or 
 #'        Cramer von Mises ("cvm"). Kolmogorov-Smirnov is the default choice. 
@@ -51,15 +60,23 @@
 #' @importFrom stats quantile
 #' @importFrom stats density
 #' @export
-bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_sampler, conditional_cdf, params, B = 1000, statistic = c("ks", "cvm"), aggregate = c("mean", "max"), quantiles = NULL, plot.include = FALSE) {
+bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_sampler, conditional_cdf, fit_model, params0, B = 1000, statistic = c("ks", "cvm"), aggregate = c("mean", "max"), quantiles = NULL, plot.include = FALSE) {
   burnin <- 500
   thin <- 5
   iter <- B*thin + burnin
   y_star <- run_conclique_gibbs(conclique_cover, neighbors, inits, conditional_sampler, params, iter)
   y_star <- y_star[(burnin:iter)[burnin:iter %% thin == 1], ]
-  resids_star <- apply(y_star, 1, spatial_residuals, neighbors, conditional_cdf, params) %>% t()
-  gof_stat_star <- apply(resids_star, 1, gof_statistics, conclique_cover, statistic, aggregate)
+  fit_func <- get(fit_model)
   
+  gof_stat_star <- rep(NA, B)
+  for(i in 1:B) {
+    dat <- y_star[i,]
+    params_star <- fit_func(dat, neighbors, params0)
+    resids_star <- spatial_residuals(dat, neighbors, conditional_cdf, params_star)
+    gof_stat_star[i] <- gof_statistics(resids_star, conclique_cover, statistic, aggregate)
+  }
+  
+  params <- fit_func(data, neighbors, params0)
   resids <- spatial_residuals(data, neighbors, conditional_cdf, params)
   gof_stat <- gof_statistics(resids, conclique_cover, statistic, aggregate)
   
