@@ -64,9 +64,12 @@ bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_s
   burnin <- 500
   thin <- 5
   iter <- B*thin + burnin
+  
+  fit_func <- get(fit_model)
+  params <- fit_func(data, neighbors, params0)
+  
   y_star <- run_conclique_gibbs(conclique_cover, neighbors, inits, conditional_sampler, params, iter)
   y_star <- y_star[(burnin:iter)[burnin:iter %% thin == 1], ]
-  fit_func <- get(fit_model)
   
   gof_stat_star <- rep(NA, B)
   for(i in 1:B) {
@@ -76,7 +79,6 @@ bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_s
     gof_stat_star[i] <- gof_statistics(resids_star, conclique_cover, statistic, aggregate)
   }
   
-  params <- fit_func(data, neighbors, params0)
   resids <- spatial_residuals(data, neighbors, conditional_cdf, params)
   gof_stat <- gof_statistics(resids, conclique_cover, statistic, aggregate)
   
