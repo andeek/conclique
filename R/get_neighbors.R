@@ -41,14 +41,13 @@ get_neighbors <- function(lattice, directional = FALSE, grid = NULL) {
     
     res <- list(ew = res_ew, ns = res_ns)
   } else {
-    adj <- adjacent_vertices(lattice, as_ids(V(lattice)))
-    max_length <- do.call(max, lapply(adj, FUN = length))
-    adj_aug <- lapply(adj, FUN = function(row){ r <- as_ids(row); if(max_length > length(r)) r <- c(r, rep(NA, max_length - length(r))); as.numeric(r) })
-    neighs <- do.call(rbind, adj_aug)
-    res <- data.frame(vertex = as.numeric(names(adj_aug)))
-    res <- cbind(res, neighs)
-    names(res)[-1] <- paste0("neighbor_", 1:max_length)
-    
+    vertices %>%
+      do_(~data.frame(neighbors = as_ids(adjacent_vertices(lattice, .$vertex)[[1]]))) %>%
+      group_by_(~vertex) %>%
+      mutate_(key = ~paste0("neighbor_", 1:n())) %>%
+      spread_("key", "neighbors") %>%
+      arrange_(~vertex) %>%
+      data.matrix() -> res
     res <- list(res)
   }
   
