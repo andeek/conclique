@@ -27,15 +27,22 @@ typedef arma::vec (*cdfPtr)(List, List);
 //'        which are vectors that contain the horizontal and vertical location of each point in space.
 //'        The input "params" is a list of parameter values. This function returns the inverse cdf at a value between 0 and 1 from the conditional distribution
 //' @param params A list of parameters to be passed to the conditional_density function 
+//' @param discrete If you are dealing with a discrete distribution, the string name of the pmf function. Otherwise, leave as an empty string.
 //' @param ncols A integer of the number of columns in the original grid. Only necessary if dealing with "u" and "v" in cdf function.
 //' @export
 // [[Rcpp::export]]
-arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params, int ncols = 0) {
+arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params, std::string discrete = "", int ncols = 0) {
+  
   int N = neighbors.length();
+  vec res(N);
+  
+  RNGScope rngScope;
+  
+  
   List sums(N);
   List nums(N);
   int n, m;
-  vec loc_u(N), loc_v(N);
+  vec loc_u(N), loc_v(N), lim(N), A_vec(N);
   
   if(ncols > 0) {
     // location information
@@ -46,14 +53,13 @@ arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditio
     loc_u = s - row*data.n_cols + 1;
   }
 
-  
   bool r_func = true;
   Environment global = Environment::global_env();
   
   std::map<std::string, cdfPtr> cdf_map;
   cdf_map["gaussian_single_param"] = gaussian_single_param_cdf;
   
-  // defined samplers in the package
+  // defined cdf in the package
   std::map<std::string, cdfPtr>::iterator it;
   it = cdf_map.find(conditional_cdf);
   if (it != cdf_map.end())
@@ -86,15 +92,28 @@ arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditio
     sums_nums_loc.push_back(loc_u, "u");
     sums_nums_loc.push_back(loc_v, "v");
   }
-
+  
+  
   if(r_func) {
     Function cdf = global[conditional_cdf];
     NumericVector resid = cdf(sums_nums_loc, params);
-    vec res(resid.begin(), resid.length());
-    return(res);
+    res = resid;
   } else {
-    vec res = cdf_map[conditional_cdf](sums_nums_loc, params);
-    return(res);
+    res = cdf_map[conditional_cdf](sums_nums_loc, params);
   }
+  
+  if(discrete.length() > 0) {
+    Function pmf = global[discrete];
+    NumericVector limit = pmf(sums_nums_loc, params);
+    NumericVector A = runif(limit.length());
+    
+    vec lim(limit.begin(), limit.length());
+    vec A_vec(A.begin(), A.length());
+    vec one(lim.n_elem); one.ones(); 
+    
+    res = (one - A_vec) % res + A_vec % (res - lim);
+  }
+
+  return(res);
 
 }

@@ -4,7 +4,8 @@
 \alias{spatial_residuals}
 \title{Get spatial residuals from data given a neighborhood structure and MRF model.}
 \usage{
-spatial_residuals(data, neighbors, conditional_cdf, params, ncols = 0L)
+spatial_residuals(data, neighbors, conditional_cdf, params, discrete = "",
+  ncols = 0L)
 }
 \arguments{
 \item{data}{A vector containing data values for each location in the lattice.}
@@ -30,6 +31,8 @@ which are vectors that contain the horizontal and vertical location of each poin
 The input "params" is a list of parameter values. This function returns the inverse cdf at a value between 0 and 1 from the conditional distribution}
 
 \item{params}{A list of parameters to be passed to the conditional_density function}
+
+\item{discrete}{If you are dealing with a discrete distribution, the string name of the pmf function. Otherwise, leave as an empty string.}
 
 \item{ncols}{A integer of the number of columns in the original grid. Only necessary if dealing with "u" and "v" in cdf function.}
 }

@@ -125,9 +125,10 @@ binary_two_param_sampler <- function(data, params) {
 #'        which are vectors that contain the horizontal and vertical location of each point in space.
 #'        The input "params" is a list of parameter values. This function returns the inverse cdf at a value between 0 and 1 from the conditional distribution
 #' @param params A list of parameters to be passed to the conditional_density function 
+#' @param discrete If you are dealing with a discrete distribution, the string name of the pmf function. Otherwise, leave as an empty string.
 #' @param ncols A integer of the number of columns in the original grid. Only necessary if dealing with "u" and "v" in cdf function.
 #' @export
-spatial_residuals <- function(data, neighbors, conditional_cdf, params, ncols = 0L) {
-    .Call('conclique_spatial_residuals', PACKAGE = 'conclique', data, neighbors, conditional_cdf, params, ncols)
+spatial_residuals <- function(data, neighbors, conditional_cdf, params, discrete = "", ncols = 0L) {
+    .Call('conclique_spatial_residuals', PACKAGE = 'conclique', data, neighbors, conditional_cdf, params, discrete, ncols)
 }
 

@@ -14,6 +14,10 @@ using namespace Rcpp; using namespace arma;
 //' @export
 // [[Rcpp::export]]
 arma::vec gaussian_single_param_cdf(List data, List params) {
+  
+  NumericVector datum = data["data"];
+  vec res(datum.length());
+  
   RNGScope scope;
   
   double rho = params["rho"];
@@ -26,10 +30,8 @@ arma::vec gaussian_single_param_cdf(List data, List params) {
   vec sums_vec = sums[0];
   vec nums_vec = nums[0];
   
-  NumericVector datum = data["data"];
-  
   vec mean_structure = kappa + eta * (sums_vec - nums_vec * kappa);
-  vec res(datum.length());
+  
   for(int i = 0; i < mean_structure.n_elem; ++i) {
     NumericVector prob = pnorm(datum, mean_structure(i), rho);
     res(i) = prob(i);
