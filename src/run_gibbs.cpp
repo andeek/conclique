@@ -196,12 +196,16 @@ arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, std::string cond
           mat neigh = neighbors[n];
           q = neigh.n_cols - 1;
           uvec cols = regspace<uvec>(1,  1,  q);
-
-          uvec idx = conv_to<uvec>::from(neigh.submat(rows, cols));
-          mat dat = data.elem(idx - 1);
+          
+          vec pre_idx = vectorise(neigh.submat(rows, cols) - 1);
+          uvec idx = conv_to<uvec>::from(pre_idx);
+          uvec where_nan = find_nonfinite(pre_idx);
+          
+          mat dat = data.elem(idx);
+          dat.elem(where_nan).fill(0); // NA for irregular lattices
           
           sums[n] = accu(dat);
-          nums[n] = dat.n_elem;
+          nums[n] = dat.n_elem - where_nan.n_elem;
         } // end n
         
         int u = loc_u(j);
