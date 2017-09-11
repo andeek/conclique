@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // gaussian_single_param_cdf
 arma::vec gaussian_single_param_cdf(List data, List params);
-RcppExport SEXP conclique_gaussian_single_param_cdf(SEXP dataSEXP, SEXP paramsSEXP) {
+RcppExport SEXP _conclique_gaussian_single_param_cdf(SEXP dataSEXP, SEXP paramsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,7 +20,7 @@ END_RCPP
 }
 // run_conclique_gibbs
 arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter);
-RcppExport SEXP conclique_run_conclique_gibbs(SEXP conclique_coverSEXP, SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
+RcppExport SEXP _conclique_run_conclique_gibbs(SEXP conclique_coverSEXP, SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,7 +36,7 @@ END_RCPP
 }
 // run_sequential_gibbs
 arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter);
-RcppExport SEXP conclique_run_sequential_gibbs(SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
+RcppExport SEXP _conclique_run_sequential_gibbs(SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -51,7 +51,7 @@ END_RCPP
 }
 // gaussian_single_param_sampler
 arma::vec gaussian_single_param_sampler(List data, List params);
-RcppExport SEXP conclique_gaussian_single_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
+RcppExport SEXP _conclique_gaussian_single_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -63,7 +63,7 @@ END_RCPP
 }
 // binary_single_param_sampler
 arma::vec binary_single_param_sampler(List data, List params);
-RcppExport SEXP conclique_binary_single_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
+RcppExport SEXP _conclique_binary_single_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -75,7 +75,7 @@ END_RCPP
 }
 // binary_two_param_sampler
 arma::vec binary_two_param_sampler(List data, List params);
-RcppExport SEXP conclique_binary_two_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
+RcppExport SEXP _conclique_binary_two_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -87,7 +87,7 @@ END_RCPP
 }
 // spatial_residuals
 arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditional_cdf, List params, std::string discrete, int ncols);
-RcppExport SEXP conclique_spatial_residuals(SEXP dataSEXP, SEXP neighborsSEXP, SEXP conditional_cdfSEXP, SEXP paramsSEXP, SEXP discreteSEXP, SEXP ncolsSEXP) {
+RcppExport SEXP _conclique_spatial_residuals(SEXP dataSEXP, SEXP neighborsSEXP, SEXP conditional_cdfSEXP, SEXP paramsSEXP, SEXP discreteSEXP, SEXP ncolsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -100,4 +100,20 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(spatial_residuals(data, neighbors, conditional_cdf, params, discrete, ncols));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_conclique_gaussian_single_param_cdf", (DL_FUNC) &_conclique_gaussian_single_param_cdf, 2},
+    {"_conclique_run_conclique_gibbs", (DL_FUNC) &_conclique_run_conclique_gibbs, 6},
+    {"_conclique_run_sequential_gibbs", (DL_FUNC) &_conclique_run_sequential_gibbs, 5},
+    {"_conclique_gaussian_single_param_sampler", (DL_FUNC) &_conclique_gaussian_single_param_sampler, 2},
+    {"_conclique_binary_single_param_sampler", (DL_FUNC) &_conclique_binary_single_param_sampler, 2},
+    {"_conclique_binary_two_param_sampler", (DL_FUNC) &_conclique_binary_two_param_sampler, 2},
+    {"_conclique_spatial_residuals", (DL_FUNC) &_conclique_spatial_residuals, 6},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_conclique(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

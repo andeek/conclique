@@ -13,7 +13,7 @@ NULL
 #' @rdname cdf
 #' @export
 gaussian_single_param_cdf <- function(data, params) {
-    .Call('conclique_gaussian_single_param_cdf', PACKAGE = 'conclique', data, params)
+    .Call('_conclique_gaussian_single_param_cdf', PACKAGE = 'conclique', data, params)
 }
 
 #' Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
@@ -45,7 +45,7 @@ gaussian_single_param_cdf <- function(data, params) {
 #' @param n_iter Number of times to run the Gibbs sampler
 #' @export
 run_conclique_gibbs <- function(conclique_cover, neighbors, inits, conditional_sampler, params, n_iter = 100L) {
-    .Call('conclique_run_conclique_gibbs', PACKAGE = 'conclique', conclique_cover, neighbors, inits, conditional_sampler, params, n_iter)
+    .Call('_conclique_run_conclique_gibbs', PACKAGE = 'conclique', conclique_cover, neighbors, inits, conditional_sampler, params, n_iter)
 }
 
 #' Run a sequential Gibbs sampler to sample spatial data given a lattice and neighborhood structure.
@@ -73,7 +73,7 @@ run_conclique_gibbs <- function(conclique_cover, neighbors, inits, conditional_s
 #' @param n_iter Number of times to run the Gibbs sampler
 #' @export
 run_sequential_gibbs <- function(neighbors, inits, conditional_sampler, params, n_iter = 100L) {
-    .Call('conclique_run_sequential_gibbs', PACKAGE = 'conclique', neighbors, inits, conditional_sampler, params, n_iter)
+    .Call('_conclique_run_sequential_gibbs', PACKAGE = 'conclique', neighbors, inits, conditional_sampler, params, n_iter)
 }
 
 #' Functions for sampling from conditional distributions.
@@ -88,19 +88,19 @@ NULL
 #' @rdname sampler
 #' @export
 gaussian_single_param_sampler <- function(data, params) {
-    .Call('conclique_gaussian_single_param_sampler', PACKAGE = 'conclique', data, params)
+    .Call('_conclique_gaussian_single_param_sampler', PACKAGE = 'conclique', data, params)
 }
 
 #' @rdname sampler
 #' @export
 binary_single_param_sampler <- function(data, params) {
-    .Call('conclique_binary_single_param_sampler', PACKAGE = 'conclique', data, params)
+    .Call('_conclique_binary_single_param_sampler', PACKAGE = 'conclique', data, params)
 }
 
 #' @rdname sampler
 #' @export
 binary_two_param_sampler <- function(data, params) {
-    .Call('conclique_binary_two_param_sampler', PACKAGE = 'conclique', data, params)
+    .Call('_conclique_binary_two_param_sampler', PACKAGE = 'conclique', data, params)
 }
 
 #' Get spatial residuals from data given a neighborhood structure and MRF model.
@@ -129,6 +129,6 @@ binary_two_param_sampler <- function(data, params) {
 #' @param ncols A integer of the number of columns in the original grid. Only necessary if dealing with "u" and "v" in cdf function.
 #' @export
 spatial_residuals <- function(data, neighbors, conditional_cdf, params, discrete = "", ncols = 0L) {
-    .Call('conclique_spatial_residuals', PACKAGE = 'conclique', data, neighbors, conditional_cdf, params, discrete, ncols)
+    .Call('_conclique_spatial_residuals', PACKAGE = 'conclique', data, neighbors, conditional_cdf, params, discrete, ncols)
 }
 

@@ -79,16 +79,22 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
         mat neigh = neighbors[n];
         int q = neigh.n_cols - 1;
         uvec cols = regspace<uvec>(1,  1,  q);
-        uvec idx = conv_to<uvec>::from(vectorise(neigh.submat(conc - 1, cols)));
-
-        mat dat = data.elem(idx - 1);
+        vec pre_idx = vectorise(neigh.submat(conc - 1, cols) - 1);
+        uvec idx = conv_to<uvec>::from(pre_idx);
+        uvec where_nan = find_nonfinite(pre_idx);
+        
+        mat dat = data.elem(idx);
+        dat.elem(where_nan).fill(datum::nan); // keep track of NAs for non regular neighborhoods
         dat.reshape(idx.n_elem/q, q);
-
+        
         vec sums_inner(dat.n_rows);
         vec nums_inner(dat.n_rows);
         for(m = 0; m < dat.n_rows; ++m) { // rowSums
-          sums_inner(m) = sum(dat.row(m)); // need NA handling for non regular neighborhoods
-          nums_inner(m) = dat.row(m).n_elem;
+          uvec where = find_finite(dat.row(m));
+          rowvec vals = dat.row(m);
+          
+          sums_inner(m) = sum(vals.elem(where)); // NA handling for non regular neighborhoods
+          nums_inner(m) = where.n_elem;
         } // end m
         sums[n] = sums_inner;
         nums[n] = nums_inner;
