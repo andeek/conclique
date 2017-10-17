@@ -22,6 +22,7 @@ typedef arma::vec (*samplerPtr)(List, List);
 //'           \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
 //'           \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
 //'           \item{"binary_two_param" - a binary sampler with two dependence parameters.}
+//'           \item{"binary_two_param_reg" - a binary sampler with two dependence parameters and regression on the horizontal coordinate.}
 //'         }
 //'        If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the global environment as this parameter.
 //'        The input "data" is a list containing at least two elements, 
@@ -61,7 +62,8 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
   sampler_map["gaussian_single_param"] = gaussian_single_param_sampler;
   sampler_map["binary_single_param"] = binary_single_param_sampler;
   sampler_map["binary_two_param"] = binary_two_param_sampler;
-
+  sampler_map["binary_two_param_reg"] = binary_two_param_reg_sampler;
+  
   // defined samplers in the package
   std::map<std::string, samplerPtr>::iterator it;
   it = sampler_map.find(conditional_sampler);
@@ -140,6 +142,7 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
 //'           \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
 //'           \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
 //'           \item{"binary_two_param" - a binary sampler with two dependence parameters.}
+//'           \item{"binary_two_param_reg" - a binary sampler with two dependence parameters and regression on the horizontal coordinate.}
 //'         }
 //'        If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the gloabl environment as this parameter.
 //'        The input "data" is a list containing two elements, 
@@ -178,6 +181,7 @@ arma::mat run_sequential_gibbs(List neighbors, arma::mat inits, std::string cond
   sampler_map["gaussian_single_param"] = gaussian_single_param_sampler;
   sampler_map["binary_single_param"] = binary_single_param_sampler;
   sampler_map["binary_two_param"] = binary_two_param_sampler;
+  sampler_map["binary_two_param_reg"] = binary_two_param_reg_sampler;
   
   // defined samplers in the package
   std::map<std::string, samplerPtr>::iterator it;

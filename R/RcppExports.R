@@ -33,6 +33,7 @@ gaussian_single_param_cdf <- function(data, params) {
 #'           \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
 #'           \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
 #'           \item{"binary_two_param" - a binary sampler with two dependence parameters.}
+#'           \item{"binary_two_param_reg" - a binary sampler with two dependence parameters and regression on the horizontal coordinate.}
 #'         }
 #'        If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the global environment as this parameter.
 #'        The input "data" is a list containing at least two elements, 
@@ -63,6 +64,7 @@ run_conclique_gibbs <- function(conclique_cover, neighbors, inits, conditional_s
 #'           \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
 #'           \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
 #'           \item{"binary_two_param" - a binary sampler with two dependence parameters.}
+#'           \item{"binary_two_param_reg" - a binary sampler with two dependence parameters and regression on the horizontal coordinate.}
 #'         }
 #'        If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the gloabl environment as this parameter.
 #'        The input "data" is a list containing two elements, 
@@ -101,6 +103,12 @@ binary_single_param_sampler <- function(data, params) {
 #' @export
 binary_two_param_sampler <- function(data, params) {
     .Call('_conclique_binary_two_param_sampler', PACKAGE = 'conclique', data, params)
+}
+
+#' @rdname sampler
+#' @export
+binary_two_param_reg_sampler <- function(data, params) {
+    .Call('_conclique_binary_two_param_reg_sampler', PACKAGE = 'conclique', data, params)
 }
 
 #' Get spatial residuals from data given a neighborhood structure and MRF model.

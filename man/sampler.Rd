@@ -5,6 +5,7 @@
 \alias{gaussian_single_param_sampler}
 \alias{binary_single_param_sampler}
 \alias{binary_two_param_sampler}
+\alias{binary_two_param_reg_sampler}
 \title{Functions for sampling from conditional distributions.}
 \usage{
 gaussian_single_param_sampler(data, params)
@@ -12,6 +13,8 @@ gaussian_single_param_sampler(data, params)
 binary_single_param_sampler(data, params)
 
 binary_two_param_sampler(data, params)
+
+binary_two_param_reg_sampler(data, params)
 }
 \arguments{
 \item{data}{A list containing two elements, 

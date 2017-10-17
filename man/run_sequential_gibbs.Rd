@@ -23,6 +23,7 @@ There are three built in samplers:
    \item{"gaussian_single_param" - a Gaussian sampler with a single dependence parameter,}
    \item{"binary_single_param" - a binary sampler with a single dependence parameter, and}
    \item{"binary_two_param" - a binary sampler with two dependence parameters.}
+   \item{"binary_two_param_reg" - a binary sampler with two dependence parameters and regression on the horizontal coordinate.}
  }
 If the user chooses to write their own sampler in R, they must pass the name of the sampler that is available in the gloabl environment as this parameter.
 The input "data" is a list containing two elements, 
