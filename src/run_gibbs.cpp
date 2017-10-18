@@ -110,6 +110,7 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
                                         Named("nums") = nums,
                                         Named("u") = u,
                                         Named("v") = v);
+      
 
       if(r_func) {
         NumericVector new_data = sampler(sums_nums_loc, params);
