@@ -72,7 +72,7 @@ bootstrap_gof <- function(data, conclique_cover, neighbors, inits, conditional_s
   y_star <- y_star[(burnin:iter)[burnin:iter %% thin == 1], ]
   
   gof_stat_star <- rep(NA, B)
-  for(i in 1:B) {
+  for(i in seq_len(B)) {
     dat <- y_star[i,]
     params_star <- fit_func(dat, neighbors, params0)
     resids_star <- spatial_residuals(dat, neighbors, conditional_cdf, params_star)

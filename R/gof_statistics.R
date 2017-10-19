@@ -19,7 +19,7 @@ gof_statistics <- function(residuals, conclique_cover, statistic = c("ks", "cvm"
   if(stat == "ks") {
     s <- lapply(resids, FUN = function(conc) { 
       n <- length(conc)
-      tmp <- seq(1/n, 1, 1/n)
+      tmp <- seq_len(n)/n
       sqrt(N)*max(max(abs(conc - tmp)), max(abs(conc - tmp + 1/n))) 
       })
   } else if (stat == "cvm") {
