@@ -4,8 +4,8 @@
 \alias{spatial_residuals}
 \title{Get spatial residuals from data given a neighborhood structure and MRF model.}
 \usage{
-spatial_residuals(data, neighbors, conditional_cdf, params, discrete = "",
-  ncols = 0L)
+spatial_residuals(data, neighbors, conditional_cdf, params,
+  discrete = "", ncols = 0L)
 }
 \arguments{
 \item{data}{A vector containing data values for each location in the lattice.}

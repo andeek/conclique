@@ -9,6 +9,7 @@ Description: Gibbs sampling for spatial data using Markov Random Fields and conc
              include simulation of spatial data using a conclique-based Gibbs sampler.
 URL: https://github.com/andeek/conclique
 BugReports: https://github.com/andeek/conclique/issues
+Encoding: UTF-8
 Depends:
     R (>= 3.2.2)
 Imports:
@@ -27,7 +28,7 @@ Suggests:
 License: GPL-3
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 LinkingTo:
     Rcpp,
     RcppArmadillo

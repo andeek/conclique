@@ -5,8 +5,9 @@
 \title{Get reference distribution for goodness of fit statistics for the spatial residuals of a MRF model.}
 \usage{
 bootstrap_gof(data, conclique_cover, neighbors, inits, conditional_sampler,
-  conditional_cdf, fit_model, params0, B = 1000, statistic = c("ks", "cvm"),
-  aggregate = c("mean", "max"), quantiles = NULL, plot.include = FALSE)
+  conditional_cdf, fit_model, params0, B = 1000, statistic = c("ks",
+  "cvm"), aggregate = c("mean", "max"), quantiles = NULL,
+  plot.include = FALSE)
 }
 \arguments{
 \item{data}{A vector containing data values for each location in the lattice.}

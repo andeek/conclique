@@ -14,6 +14,7 @@
 #' @importFrom dplyr do_
 #' @importFrom dplyr mutate_
 #' @importFrom dplyr arrange_
+#' @importFrom dplyr n
 #' @importFrom tidyr spread_
 get_neighbors <- function(lattice, directional = FALSE, grid = NULL) {
   
