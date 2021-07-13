@@ -28,7 +28,7 @@ Suggests:
 License: GPL-3
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 LinkingTo:
     Rcpp,
     RcppArmadillo

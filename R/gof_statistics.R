@@ -35,5 +35,5 @@ gof_statistics <- function(residuals, conclique_cover, statistic = c("ks", "cvm"
   } else {
     #attempt to evaluate user-input statistic
   }
-  do.call(aggregate, s)
+  do.call(aggregate, list(unlist(s)))
 }

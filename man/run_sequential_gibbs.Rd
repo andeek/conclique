@@ -4,8 +4,13 @@
 \alias{run_sequential_gibbs}
 \title{Run a sequential Gibbs sampler to sample spatial data given a lattice and neighborhood structure.}
 \usage{
-run_sequential_gibbs(neighbors, inits, conditional_sampler, params,
-  n_iter = 100L)
+run_sequential_gibbs(
+  neighbors,
+  inits,
+  conditional_sampler,
+  params,
+  n_iter = 100L
+)
 }
 \arguments{
 \item{neighbors}{A matrix N*N by (max // neighbors) + 1, where the first column is the location id of each location in the lattice. This could be the result from get_neighbors().

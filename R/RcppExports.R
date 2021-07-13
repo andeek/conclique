@@ -10,10 +10,25 @@
 #' @name cdf
 NULL
 
+#' Functions for using conclique based GOF test.
+#' 
+#' @param data A list containing two elements, 
+#'        sums and nums which contain the sum of the data in each neighborhood as well as the number of locations 
+#'        in the neighborhood for each point in the conclique. 
+#' @param params A list of parameter values, rho, kappa, and eta, that parameterize the Gaussian MRF.
+#' @name cdf
+NULL
+
 #' @rdname cdf
 #' @export
 gaussian_single_param_cdf <- function(data, params) {
     .Call('_conclique_gaussian_single_param_cdf', PACKAGE = 'conclique', data, params)
+}
+
+#' @rdname cdf
+#' @export
+binary_single_param_cdf <- function(data, params) {
+    .Call('_conclique_binary_single_param_cdf', PACKAGE = 'conclique', data, params)
 }
 
 #' Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.

@@ -18,6 +18,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// binary_single_param_cdf
+arma::vec binary_single_param_cdf(List data, List params);
+RcppExport SEXP _conclique_binary_single_param_cdf(SEXP dataSEXP, SEXP paramsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
+    rcpp_result_gen = Rcpp::wrap(binary_single_param_cdf(data, params));
+    return rcpp_result_gen;
+END_RCPP
+}
 // run_conclique_gibbs
 arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat inits, std::string conditional_sampler, List params, int n_iter);
 RcppExport SEXP _conclique_run_conclique_gibbs(SEXP conclique_coverSEXP, SEXP neighborsSEXP, SEXP initsSEXP, SEXP conditional_samplerSEXP, SEXP paramsSEXP, SEXP n_iterSEXP) {
@@ -116,6 +128,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_conclique_gaussian_single_param_cdf", (DL_FUNC) &_conclique_gaussian_single_param_cdf, 2},
+    {"_conclique_binary_single_param_cdf", (DL_FUNC) &_conclique_binary_single_param_cdf, 2},
     {"_conclique_run_conclique_gibbs", (DL_FUNC) &_conclique_run_conclique_gibbs, 6},
     {"_conclique_run_sequential_gibbs", (DL_FUNC) &_conclique_run_sequential_gibbs, 5},
     {"_conclique_gaussian_single_param_sampler", (DL_FUNC) &_conclique_gaussian_single_param_sampler, 2},

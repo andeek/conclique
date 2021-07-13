@@ -4,8 +4,14 @@
 \alias{run_conclique_gibbs}
 \title{Run a conclique-based Gibbs sampler to sample spatial data given a lattice and neighborhood structure.}
 \usage{
-run_conclique_gibbs(conclique_cover, neighbors, inits, conditional_sampler,
-  params, n_iter = 100L)
+run_conclique_gibbs(
+  conclique_cover,
+  neighbors,
+  inits,
+  conditional_sampler,
+  params,
+  n_iter = 100L
+)
 }
 \arguments{
 \item{conclique_cover}{A list of class "conclique_cover" encoding the locations in each conclique for 

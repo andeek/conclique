@@ -3,7 +3,6 @@
 \docType{package}
 \name{conclique}
 \alias{conclique}
-\alias{conclique-package}
 \title{conclique: Gibbs sampling for spatial data and concliques}
 \description{
 Gibbs sampling for spatial data using Markov Random Fields and concliques. 

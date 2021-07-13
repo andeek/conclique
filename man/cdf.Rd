@@ -3,9 +3,12 @@
 \name{cdf}
 \alias{cdf}
 \alias{gaussian_single_param_cdf}
+\alias{binary_single_param_cdf}
 \title{Functions for using conclique based GOF test.}
 \usage{
 gaussian_single_param_cdf(data, params)
+
+binary_single_param_cdf(data, params)
 }
 \arguments{
 \item{data}{A list containing two elements, 
@@ -15,5 +18,7 @@ in the neighborhood for each point in the conclique.}
 \item{params}{A list of parameter values, rho, kappa, and eta, that parameterize the Gaussian MRF.}
 }
 \description{
+Functions for using conclique based GOF test.
+
 Functions for using conclique based GOF test.
 }

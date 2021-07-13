@@ -4,8 +4,12 @@
 \alias{gof_statistics}
 \title{Get goodness of fit statistics for the spatial residuals of a MRF model.}
 \usage{
-gof_statistics(residuals, conclique_cover, statistic = c("ks", "cvm"),
-  aggregate = c("mean", "max"))
+gof_statistics(
+  residuals,
+  conclique_cover,
+  statistic = c("ks", "cvm"),
+  aggregate = c("mean", "max")
+)
 }
 \arguments{
 \item{residuals}{A vector containing residuals for each location in the lattice, 

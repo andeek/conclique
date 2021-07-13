@@ -58,6 +58,7 @@ arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditio
   
   std::map<std::string, cdfPtr> cdf_map;
   cdf_map["gaussian_single_param"] = gaussian_single_param_cdf;
+  cdf_map["binary_single_param"] = binary_single_param_cdf;
   
   // defined cdf in the package
   std::map<std::string, cdfPtr>::iterator it;
@@ -92,7 +93,6 @@ arma::vec spatial_residuals(arma::vec data, List neighbors, std::string conditio
     sums_nums_loc.push_back(loc_u, "u");
     sums_nums_loc.push_back(loc_v, "v");
   }
-  
   
   if(r_func) {
     Function cdf = global[conditional_cdf];
