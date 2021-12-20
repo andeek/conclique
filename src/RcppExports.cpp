@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // gaussian_single_param_cdf
 arma::vec gaussian_single_param_cdf(List data, List params);
 RcppExport SEXP _conclique_gaussian_single_param_cdf(SEXP dataSEXP, SEXP paramsSEXP) {
@@ -73,6 +78,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gaussian_two_param_sampler
+arma::vec gaussian_two_param_sampler(List data, List params);
+RcppExport SEXP _conclique_gaussian_two_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< List >::type params(paramsSEXP);
+    rcpp_result_gen = Rcpp::wrap(gaussian_two_param_sampler(data, params));
+    return rcpp_result_gen;
+END_RCPP
+}
 // binary_single_param_sampler
 arma::vec binary_single_param_sampler(List data, List params);
 RcppExport SEXP _conclique_binary_single_param_sampler(SEXP dataSEXP, SEXP paramsSEXP) {
@@ -132,6 +149,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conclique_run_conclique_gibbs", (DL_FUNC) &_conclique_run_conclique_gibbs, 6},
     {"_conclique_run_sequential_gibbs", (DL_FUNC) &_conclique_run_sequential_gibbs, 5},
     {"_conclique_gaussian_single_param_sampler", (DL_FUNC) &_conclique_gaussian_single_param_sampler, 2},
+    {"_conclique_gaussian_two_param_sampler", (DL_FUNC) &_conclique_gaussian_two_param_sampler, 2},
     {"_conclique_binary_single_param_sampler", (DL_FUNC) &_conclique_binary_single_param_sampler, 2},
     {"_conclique_binary_two_param_sampler", (DL_FUNC) &_conclique_binary_two_param_sampler, 2},
     {"_conclique_binary_two_param_reg_sampler", (DL_FUNC) &_conclique_binary_two_param_reg_sampler, 2},

@@ -60,6 +60,7 @@ arma::mat run_conclique_gibbs(List conclique_cover, List neighbors, arma::mat in
 
   std::map<std::string, samplerPtr> sampler_map;
   sampler_map["gaussian_single_param"] = gaussian_single_param_sampler;
+  sampler_map["gaussian_two_param"] = gaussian_two_param_sampler;
   sampler_map["binary_single_param"] = binary_single_param_sampler;
   sampler_map["binary_two_param"] = binary_two_param_sampler;
   sampler_map["binary_two_param_reg"] = binary_two_param_reg_sampler;

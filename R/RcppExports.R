@@ -110,6 +110,12 @@ gaussian_single_param_sampler <- function(data, params) {
 
 #' @rdname sampler
 #' @export
+gaussian_two_param_sampler <- function(data, params) {
+    .Call('_conclique_gaussian_two_param_sampler', PACKAGE = 'conclique', data, params)
+}
+
+#' @rdname sampler
+#' @export
 binary_single_param_sampler <- function(data, params) {
     .Call('_conclique_binary_single_param_sampler', PACKAGE = 'conclique', data, params)
 }

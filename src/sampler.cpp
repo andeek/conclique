@@ -40,6 +40,36 @@ arma::vec gaussian_single_param_sampler(List data, List params) {
 //' @rdname sampler
 //' @export
 // [[Rcpp::export]]
+arma::vec gaussian_two_param_sampler(List data, List params) {
+  
+  List sums = data["sums"];
+  List nums = data["nums"];
+  
+  vec sums_vec_1 = sums[0];
+  vec nums_vec_1 = nums[0];
+  vec sums_vec_2 = sums[1];
+  vec nums_vec_2 = nums[1];
+  
+  vec res(sums_vec_1.n_elem);
+  
+  RNGScope scope;
+  
+  double rho = params["rho"];
+  double kappa = params["kappa"];
+  double eta_1 = params["eta_1"];
+  double eta_2 = params["eta_2"];
+  
+  vec mean_structure = kappa + eta_1 * (sums_vec_1 - nums_vec_1 * kappa) + eta_2 * (sums_vec_2 - nums_vec_2 * kappa);
+  res = rnorm(mean_structure.n_elem);
+  res = res * rho + mean_structure;
+  
+  return(res);
+}
+
+
+//' @rdname sampler
+//' @export
+// [[Rcpp::export]]
 arma::vec binary_single_param_sampler(List data, List params) {
   List sums = data["sums"];
   List nums = data["nums"];

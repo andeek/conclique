@@ -3,12 +3,15 @@
 \name{sampler}
 \alias{sampler}
 \alias{gaussian_single_param_sampler}
+\alias{gaussian_two_param_sampler}
 \alias{binary_single_param_sampler}
 \alias{binary_two_param_sampler}
 \alias{binary_two_param_reg_sampler}
 \title{Functions for sampling from conditional distributions.}
 \usage{
 gaussian_single_param_sampler(data, params)
+
+gaussian_two_param_sampler(data, params)
 
 binary_single_param_sampler(data, params)
 
